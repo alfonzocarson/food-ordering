@@ -73,6 +73,5 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(_ animated: Bool) {
         cartListTable.reloadData()
-        print(DataBaseQueries.cartItems)
     }
 }
