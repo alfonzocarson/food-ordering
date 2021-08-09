@@ -153,18 +153,20 @@ class ItemListTableViewCell: UITableViewCell {
     }
     
     @objc func insertToCart(){
-        item.qty = 1
+        plusTaped()
     }
     
     @objc func minusTaped(){
         if item.qty>=1 {
             item.qty -= 1
+            DataBaseQueries.setQuantity(item_id: item.item_id, qty: item.qty)
         }
     }
     
     @objc func plusTaped(){
         if item.qty<50 {
             item.qty += 1
+            DataBaseQueries.setQuantity(item_id: item.item_id, qty: item.qty)
         }
     }
 }

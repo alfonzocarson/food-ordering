@@ -95,13 +95,17 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         DataBaseQueries.searchItems(having: searchController.searchBar.text!)
         itemListTable.reloadData()
+        print("Search \(DataBaseQueries.filteredItems.count)")
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        DataBaseQueries.searchItems(having: "")
-        print("cancel reloaded")
         
+        DataBaseQueries.searchItems(having: "")
         itemListTable.reloadData()
+        print("cancel \(DataBaseQueries.filteredItems.count)")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        itemListTable.reloadData()
+    }
 }

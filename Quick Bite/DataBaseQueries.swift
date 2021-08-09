@@ -16,8 +16,10 @@ class DataBaseQueries{
     
     static var itemsList : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = []
     static var filteredItems = itemsList
+    static var cartItems : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = []
     
     static func fetchItems(){
+        itemsList = []
         let selectString = """
         SELECT * FROM items;
         """
@@ -44,11 +46,24 @@ class DataBaseQueries{
         }
         
         sqlite3_finalize(selectStatement)
+        filteredItems = []
         filteredItems = itemsList
+        cartItems = []
+        for item in filteredItems{
+            if item.qty>0 {
+                cartItems.append(item)
+            }
+        }
+        
+        print(cartItems.count)
     }
     
     static func getItem(at index:Int) -> (item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String){
         return filteredItems[index]
+    }
+    
+    static func getCartItem(at index:Int) -> (item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String){
+        return cartItems[index]
     }
     
     static func searchItems(having: String){
@@ -63,7 +78,37 @@ class DataBaseQueries{
                 }
             }
         }
+        
+    }
+    
+    static func setQuantity(item_id: Int, qty:Int){
+        let updateString = """
+        UPDATE items SET qty = ? WHERE item_id = ?;
+        """
+        
+        var updateStatement: OpaquePointer?
+        
+        if sqlite3_prepare_v2(dbQueue, updateString, -1, &updateStatement, nil) ==
+            SQLITE_OK {
             
+            sqlite3_bind_int(updateStatement, 1, Int32(qty))
+            sqlite3_bind_int(updateStatement, 2, Int32(item_id))
+            
+            if sqlite3_step(updateStatement) == SQLITE_DONE {
+                print("item \(item_id) qty update")
+            }
+            else {
+                print("item \(item_id) qty not updated.")
+            }
+            sqlite3_reset(updateStatement)
+        }
+        else {
+            print("UPDATE statement is not prepared.")
+        }
+        
+        sqlite3_finalize(updateStatement)
+        
+        fetchItems()
     }
     
     static func createAndOpenDB(){
