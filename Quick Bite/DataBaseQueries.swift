@@ -16,7 +16,16 @@ class DataBaseQueries{
     
     static var itemsList : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = []
     static var filteredItems = itemsList
-    static var cartItems : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = []
+    static var cartItems : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = [] {
+        didSet{
+            if cartItems.count > 0 {
+                TabBarViewController.vc[1].tabBarItem.badgeValue = String(cartItems.count)
+            }
+            else {
+                TabBarViewController.vc[1].tabBarItem.badgeValue = nil
+            }
+        }
+    }
     
     static func fetchItems(){
         itemsList = []
@@ -54,8 +63,6 @@ class DataBaseQueries{
                 cartItems.append(item)
             }
         }
-        
-        print(cartItems.count)
     }
     
     static func getItem(at index:Int) -> (item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String){

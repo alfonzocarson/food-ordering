@@ -10,6 +10,10 @@ import UIKit
 
 class TabBarViewController: UITabBarController {
     
+    static var cartSize = DataBaseQueries.cartItems.count
+    
+    static var vc: [UIViewController] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -19,26 +23,27 @@ class TabBarViewController: UITabBarController {
     
     func setViews(){
         
+        TabBarViewController.vc.append(MenuViewController())
+        TabBarViewController.vc.append(CartViewController())
+        TabBarViewController.vc.append(OrdersViewController())
+        TabBarViewController.vc.append(HistoryViewController())
+        TabBarViewController.vc.append(SettingsViewController())
+        
+        self.setViewControllers(TabBarViewController.vc, animated: true)
+        
         DataBaseQueries.createAndOpenDB()
         DataBaseQueries.creteTables()
         DataBaseQueries.insertItems()
         DataBaseQueries.fetchItems()
         
-        var vc: [UIViewController] = []
-        
-        vc.append(MenuViewController())
-        vc.append(CartViewController())
-        vc.append(OrdersViewController())
-        vc.append(HistoryViewController())
-        vc.append(SettingsViewController())
-        
-        self.setViewControllers(vc, animated: true)
         
         let tabNames = ["Menu","Cart","Orders","History","Settings"]
         
         for i in 0..<tabNames.count {
-            vc[i].tabBarItem = UITabBarItem(title: tabNames[i], image: UIImage(named: tabNames[i]), selectedImage: UIImage(named: tabNames[i]))
+            TabBarViewController.vc[i].tabBarItem = UITabBarItem(title: tabNames[i], image: UIImage(named: tabNames[i]), selectedImage: UIImage(named: tabNames[i]))
         }
+        
+        TabBarViewController.vc[1].tabBarItem.badgeColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         
         tabBar.barTintColor = .white
         tabBar.unselectedItemTintColor = .darkGray
