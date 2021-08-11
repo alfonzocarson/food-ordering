@@ -14,6 +14,7 @@
 		54A766A426BE923C00D70B3F /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A766A326BE923C00D70B3F /* TabBarViewController.swift */; };
 		54A766A626BE928800D70B3F /* DataBaseQueries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A766A526BE928800D70B3F /* DataBaseQueries.swift */; };
 		54C8060226BE9B0000A59F7C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 54C8060126BE9B0000A59F7C /* Assets.xcassets */; };
+		54C8060426C3E58E00A59F7C /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C8060326C3E58E00A59F7C /* Item.swift */; };
 		54E1448826BE92D9009C9A34 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1448726BE92D9009C9A34 /* CartViewController.swift */; };
 		54E1448A26BE92FC009C9A34 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1448926BE92FC009C9A34 /* HistoryViewController.swift */; };
 		54E1448C26BE932B009C9A34 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1448B26BE932B009C9A34 /* MenuViewController.swift */; };
@@ -32,6 +33,7 @@
 		54A766A326BE923C00D70B3F /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		54A766A526BE928800D70B3F /* DataBaseQueries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseQueries.swift; sourceTree = "<group>"; };
 		54C8060126BE9B0000A59F7C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		54C8060326C3E58E00A59F7C /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		54E1448726BE92D9009C9A34 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		54E1448926BE92FC009C9A34 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		54E1448B26BE932B009C9A34 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				54A7669B26BE91AF00D70B3F /* Info.plist */,
 				54E1449426BE950F009C9A34 /* ViewControllers */,
 				54A766A526BE928800D70B3F /* DataBaseQueries.swift */,
+				54C8060326C3E58E00A59F7C /* Item.swift */,
 			);
 			path = "Quick Bite";
 			sourceTree = "<group>";
@@ -169,6 +172,7 @@
 				54E1448E26BE936A009C9A34 /* ItemListTableViewCell.swift in Sources */,
 				54E1449026BE939A009C9A34 /* OrdersViewController.swift in Sources */,
 				54E1448826BE92D9009C9A34 /* CartViewController.swift in Sources */,
+				54C8060426C3E58E00A59F7C /* Item.swift in Sources */,
 				54A7669026BE91AD00D70B3F /* SceneDelegate.swift in Sources */,
 				54E1448C26BE932B009C9A34 /* MenuViewController.swift in Sources */,
 				54A766A426BE923C00D70B3F /* TabBarViewController.swift in Sources */,

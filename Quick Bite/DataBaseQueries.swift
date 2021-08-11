@@ -14,46 +14,27 @@ var dbUrl = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainM
 
 class DataBaseQueries{
     
-    static var itemsList : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = []
-    
-    static var filteredItems = itemsList
-    
-    static var cartItems : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = [] {
-        didSet{
-            if cartItems.count > 0 {
-                TabBarViewController.vc[1].tabBarItem.badgeValue = String(cartItems.count)
-            }
-            else {
-                TabBarViewController.vc[1].tabBarItem.badgeValue = nil
-            }
-            var totalVal = 0
-            for item in cartItems {
-                totalVal += item.qty * item.price
-            }
-            print("total \(totalVal)")
-            CartViewController.cartTotal = totalVal
-        }
-    }
-    
-    static func fetchItems(){
-        itemsList = []
+    static func getMenuItems()->[Item] {
+        
+        var itemsList = [Item]()
         let selectString = """
         SELECT * FROM items;
         """
+        
         var selectStatement: OpaquePointer?
         if sqlite3_prepare_v2(dbQueue, selectString, -1, &selectStatement, nil) ==
             SQLITE_OK {
             
             while sqlite3_step(selectStatement) == SQLITE_ROW {
-                let item:(Int, String, String, Int, Int, Int, Int, String) = (
-                    Int(sqlite3_column_int(selectStatement, 0)),
-                    String(cString: sqlite3_column_text(selectStatement, 1)),
-                    String(cString: sqlite3_column_text(selectStatement, 2)),
-                    Int(sqlite3_column_int(selectStatement, 3)),
-                    Int(sqlite3_column_int(selectStatement, 4)),
-                    Int(sqlite3_column_int(selectStatement, 5)),
-                    Int(sqlite3_column_int(selectStatement, 6)),
-                    String(cString: sqlite3_column_text(selectStatement, 7))
+                let item = Item(
+                    item_id: Int(sqlite3_column_int(selectStatement, 0)),
+                    item_name: String(cString: sqlite3_column_text(selectStatement, 1)),
+                    desc: String(cString: sqlite3_column_text(selectStatement, 2)),
+                    price: Int(sqlite3_column_int(selectStatement, 3)),
+                    veg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
+                    qty: Int(sqlite3_column_int(selectStatement, 5)),
+                    category_id: Int(sqlite3_column_int(selectStatement, 6)),
+                    category_name: String(cString: sqlite3_column_text(selectStatement, 7))
                 )
                 itemsList.append(item)
             }
@@ -63,37 +44,39 @@ class DataBaseQueries{
         }
         
         sqlite3_finalize(selectStatement)
-        filteredItems = []
-        filteredItems = itemsList
-        cartItems = []
-        for item in filteredItems{
-            if item.qty>0 {
-                cartItems.append(item)
+        return itemsList
+    }
+    
+    static func getCartItems()->[Item] {
+        
+        var cartList = [Item]()
+        let selectString = """
+        SELECT * FROM items WHERE qty > 0;
+        """
+        
+        var selectStatement: OpaquePointer?
+        if sqlite3_prepare_v2(dbQueue, selectString, -1, &selectStatement, nil) ==
+            SQLITE_OK {
+            
+            while sqlite3_step(selectStatement) == SQLITE_ROW {
+                let item: Item = Item(
+                    item_id: Int(sqlite3_column_int(selectStatement, 0)),
+                    item_name: String(cString: sqlite3_column_text(selectStatement, 1)),
+                    desc: String(cString: sqlite3_column_text(selectStatement, 2)),
+                    price: Int(sqlite3_column_int(selectStatement, 3)),
+                    veg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
+                    qty: Int(sqlite3_column_int(selectStatement, 5)),
+                    category_id: Int(sqlite3_column_int(selectStatement, 6)),
+                    category_name: String(cString: sqlite3_column_text(selectStatement, 7))
+                )
+                cartList.append(item)
             }
-        }
-    }
-    
-    static func getItem(at index:Int) -> (item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String){
-        return filteredItems[index]
-    }
-    
-    static func getCartItem(at index:Int) -> (item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String){
-        return cartItems[index]
-    }
-    
-    static func searchItems(having: String){
-        if having == "" {
-            filteredItems = itemsList
         }
         else {
-            filteredItems = []
-            for item in itemsList {
-                if item.item_name.lowercased().contains(having.lowercased()){
-                    filteredItems.append(item)
-                }
-            }
+            print("Select items statement is not prepared.")
         }
-        
+        sqlite3_finalize(selectStatement)
+        return cartList
     }
     
     static func setQuantity(item_id: Int, qty:Int){
@@ -122,8 +105,6 @@ class DataBaseQueries{
         }
         
         sqlite3_finalize(updateStatement)
-        
-        fetchItems()
     }
     
     static func createAndOpenDB(){
@@ -181,10 +162,6 @@ class DataBaseQueries{
         }
         
         sqlite3_finalize(createTableStatement)
-    }
-    
-    static func numberOfItems()->Int{
-        return filteredItems.count
     }
     
     static func insertItems(){

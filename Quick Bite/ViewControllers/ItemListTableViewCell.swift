@@ -10,14 +10,16 @@ import UIKit
 
 class ItemListTableViewCell: UITableViewCell {
     
-    var item: (item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)! {
+    var item: Item! {
         didSet{
             priceLabel.text = "₹ \(item.price)"
             itemLabel.text = item.item_name
-            symbol.image = item.veg == 1 ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
+            symbol.image = item.veg == true ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
             qty = item.qty
         }
     }
+    
+    weak var delegate: UpdateItems?
     
     let img = UIImageView()
     let symbol = UIImageView()
@@ -160,6 +162,7 @@ class ItemListTableViewCell: UITableViewCell {
         if item.qty>=1 {
             item.qty -= 1
             DataBaseQueries.setQuantity(item_id: item.item_id, qty: item.qty)
+            delegate?.updateItems()
         }
     }
     
@@ -167,6 +170,7 @@ class ItemListTableViewCell: UITableViewCell {
         if item.qty<50 {
             item.qty += 1
             DataBaseQueries.setQuantity(item_id: item.item_id, qty: item.qty)
+            delegate?.updateItems()
         }
     }
 }

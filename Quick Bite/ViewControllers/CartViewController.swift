@@ -7,9 +7,22 @@
 
 import UIKit
 
-class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UpdateItems, SyncItems {
     
-    static var cartTotal = 0
+    var cartList = [Item](){
+        didSet{
+            cartListTable.reloadData()
+            self.tabBarItem.badgeValue = cartList.count > 0 ? String(cartList.count) : nil
+            var cartTotal = 0
+            for item in cartList {
+                cartTotal += item.price * item.qty
+            }
+            orderButton.isHidden = cartList.count == 0 ? true : false
+            cartValue.text = cartList.count > 0 ? "Your Cart Value = ₹ \(cartTotal)" : "Your Cart is Empty"
+        }
+    }
+    
+    weak var delegate: SyncItems?
     
     let cartLabel = UILabel()
     let cartListTable = UITableView()
@@ -62,12 +75,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartListTable.bottomAnchor.constraint(equalTo: cartValue.topAnchor, constant: -16).isActive = true
         cartListTable.register(ItemListTableViewCell.self, forCellReuseIdentifier: "ItemListTableViewCell")
         
-        if CartViewController.cartTotal > 0 {
-            cartValue.text = "Your Cart Value = ₹ \(CartViewController.cartTotal)"
-        }
-        else {
-            cartValue.text = "Your Cart is Empty"
-        }
         cartValue.font = .boldSystemFont(ofSize: 20)
         cartValue.textAlignment = .center
         cartValue.textColor = .black// #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
@@ -95,12 +102,13 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return DataBaseQueries.cartItems.count
+        return cartList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemListTableViewCell") as! ItemListTableViewCell
-        cell.item = DataBaseQueries.getCartItem(at: indexPath.row)
+        cell.item = cartList[indexPath.row]
+        cell.delegate = self
         return cell
     }
     
@@ -110,55 +118,19 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(_ animated: Bool) {
         cartListTable.reloadData()
-        orderButton.isHidden = DataBaseQueries.cartItems.count == 0 ? true : false
-        if CartViewController.cartTotal > 0 {
-            cartValue.text = "Your Cart Value: ₹ \(CartViewController.cartTotal)"
-        }
-        else {
-            cartValue.text = "Your Cart is Empty"
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // Add animations here
-        cell.alpha = 0.7
-        
-        UIView.animate(
-            withDuration: 0.5,
-            delay: 0.05 * Double(indexPath.row),
-            animations: {
-                cell.alpha = 1
-            })
-    }
-    
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        if CartViewController.cartTotal > 0 {
-            cartValue.text = "Your Cart Value: ₹ \(CartViewController.cartTotal)"
-        }
-        else {
-            cartValue.text = "Your Cart is Empty"
-        }
-        cartListTable.reloadData()
-        orderButton.isHidden = DataBaseQueries.cartItems.count == 0 ? true : false
+        orderButton.isHidden = cartList.count == 0 ? true : false
     }
     
     @objc func placeOrder(){
-        if CartViewController.cartTotal > 0 {
-            cartValue.text = "Your Cart Value: ₹ \(CartViewController.cartTotal)"
-        }
-        else {
-            cartValue.text = "Your Cart is Empty"
-        }
         cartListTable.reloadData()
     }
     
-    func cartUpdated(_ value: Int){
-        if value > 0 {
-            cartValue.text = "Your Cart Value: ₹ \(value)"
-        }
-        else {
-            cartValue.text = "Your Cart is Empty"
-        }
-        cartListTable.reloadData()
+    func updateItems() {
+        cartList = DataBaseQueries.getCartItems()
+        delegate?.syncItems()
+    }
+    
+    func syncItems() {
+        cartList = DataBaseQueries.getCartItems()
     }
 }

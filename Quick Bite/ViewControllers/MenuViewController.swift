@@ -8,16 +8,30 @@
 import UIKit
 import SQLite3
 
-class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, UISearchBarDelegate  {
+class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, UISearchBarDelegate, UpdateItems, SyncItems  {
+    
+    var menuList = [Item](){
+        didSet{
+            filteredMenuList = menuList
+            updateSearchResults(for: resultSearchController)
+        }
+    }
+    
+    var filteredMenuList = [Item](){
+        didSet{
+            itemListTable.reloadData()
+        }
+    }
+    
+    weak var delegate: SyncItems?
     
     let welcomeLabel = UILabel()
     let itemListTable = UITableView()
     var resultSearchController = UISearchController()
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
+        super.viewDidLoad()
         setViews()
         setConstraints()
     }
@@ -35,10 +49,10 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
             controller.searchBar.layer.cornerRadius = 7.0
             controller.searchBar.barTintColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
             controller.searchBar.delegate = self
-
+            
             itemListTable.tableHeaderView = controller.searchBar
             itemListTable.tableHeaderView?.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
-
+            
             return controller
         })()
     }
@@ -76,13 +90,14 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return DataBaseQueries.numberOfItems()
+        return filteredMenuList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemListTableViewCell") as! ItemListTableViewCell
-        cell.item = DataBaseQueries.getItem(at: indexPath.row)
+        cell.item = filteredMenuList[indexPath.row]
+        cell.delegate = self
         return cell
     }
     
@@ -93,17 +108,35 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func updateSearchResults(for searchController: UISearchController) {
         
-        DataBaseQueries.searchItems(having: searchController.searchBar.text!)
-        itemListTable.reloadData()
+        let searchString = searchController.searchBar.text!.lowercased()
+        if(searchString == "") {
+            filteredMenuList = menuList
+        }
+        else{
+            filteredMenuList = []
+            for item in menuList {
+                if item.item_name.lowercased().contains(searchString) {
+                    filteredMenuList.append(item)
+                }
+            }
+        }
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
-        DataBaseQueries.searchItems(having: "")
-        itemListTable.reloadData()
+        filteredMenuList = menuList
     }
     
     override func viewWillAppear(_ animated: Bool) {
         itemListTable.reloadData()
+    }
+    
+    func updateItems() {
+        menuList = DataBaseQueries.getMenuItems()
+        delegate?.syncItems()
+    }
+    
+    func syncItems() {
+        menuList = DataBaseQueries.getMenuItems()
     }
 }
