@@ -10,8 +10,6 @@ import UIKit
 
 class TabBarViewController: UITabBarController {
     
-    static var cartSize = DataBaseQueries.cartItems.count
-    
     static var vc: [UIViewController] = []
     
     override func viewDidLoad() {
@@ -36,7 +34,6 @@ class TabBarViewController: UITabBarController {
         DataBaseQueries.insertItems()
         DataBaseQueries.fetchItems()
         
-        
         let tabNames = ["Menu","Cart","Orders","History","Settings"]
         
         for i in 0..<tabNames.count {
@@ -44,6 +41,10 @@ class TabBarViewController: UITabBarController {
         }
         
         TabBarViewController.vc[1].tabBarItem.badgeColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+        
+        if DataBaseQueries.cartItems.count > 0{
+            TabBarViewController.vc[1].tabBarItem.badgeValue = String(DataBaseQueries.cartItems.count)
+        }
         
         tabBar.barTintColor = .white
         tabBar.unselectedItemTintColor = .darkGray

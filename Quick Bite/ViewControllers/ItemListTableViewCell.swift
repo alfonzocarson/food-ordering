@@ -106,7 +106,7 @@ class ItemListTableViewCell: UITableViewCell {
         priceLabel.text = "₹ "
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        add.setImage(UIImage(named: "Add"), for: .normal)
+        //add.setImage(UIImage(named: "Add"), for: .normal)
         add.setTitle("   ADD   ", for: .normal)
         add.titleLabel?.font = .boldSystemFont(ofSize: 16)
         add.setTitleColor(.white, for: .normal)

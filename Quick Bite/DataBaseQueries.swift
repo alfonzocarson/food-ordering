@@ -15,7 +15,9 @@ var dbUrl = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainM
 class DataBaseQueries{
     
     static var itemsList : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = []
+    
     static var filteredItems = itemsList
+    
     static var cartItems : [(item_id: Int, item_name:String, desc: String, price:Int, veg:Int, qty:Int, category_id:Int, category_name:String)] = [] {
         didSet{
             if cartItems.count > 0 {
@@ -24,6 +26,12 @@ class DataBaseQueries{
             else {
                 TabBarViewController.vc[1].tabBarItem.badgeValue = nil
             }
+            var totalVal = 0
+            for item in cartItems {
+                totalVal += item.qty * item.price
+            }
+            print("total \(totalVal)")
+            CartViewController.cartTotal = totalVal
         }
     }
     
@@ -264,4 +272,3 @@ class DataBaseQueries{
         sqlite3_finalize(insertStatement)
     }
 }
-
