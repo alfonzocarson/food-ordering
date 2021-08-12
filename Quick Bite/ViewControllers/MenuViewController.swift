@@ -19,14 +19,14 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var filteredMenuList = [Item](){
         didSet{
-            itemListTable.reloadData()
+            menuListTable.reloadData()
         }
     }
     
     weak var delegate: SyncItems?
     
     let welcomeLabel = UILabel()
-    let itemListTable = UITableView()
+    let menuListTable = UITableView()
     var resultSearchController = UISearchController()
     
     override func viewDidLoad() {
@@ -38,7 +38,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func setViews(){
         view.addSubview(welcomeLabel)
-        view.addSubview(itemListTable)
+        view.addSubview(menuListTable)
         resultSearchController = ({
             let controller = UISearchController(searchResultsController: nil)
             controller.searchResultsUpdater = self
@@ -50,8 +50,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
             controller.searchBar.barTintColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
             controller.searchBar.delegate = self
             
-            itemListTable.tableHeaderView = controller.searchBar
-            itemListTable.tableHeaderView?.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+            menuListTable.tableHeaderView = controller.searchBar
+            menuListTable.tableHeaderView?.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
             
             return controller
         })()
@@ -72,20 +72,20 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         welcomeLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         
-        itemListTable.delegate = self
-        itemListTable.dataSource = self
-        itemListTable.allowsSelection = false
-        itemListTable.isUserInteractionEnabled = true
-        itemListTable.allowsSelection = false
-        itemListTable.separatorStyle = .none
-        itemListTable.isUserInteractionEnabled = true
-        itemListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
-        itemListTable.translatesAutoresizingMaskIntoConstraints = false
-        itemListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
-        itemListTable.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 16).isActive = true
-        itemListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
-        itemListTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
-        itemListTable.register(ItemListTableViewCell.self, forCellReuseIdentifier: "ItemListTableViewCell")
+        menuListTable.delegate = self
+        menuListTable.dataSource = self
+        menuListTable.allowsSelection = false
+        menuListTable.isUserInteractionEnabled = true
+        menuListTable.allowsSelection = false
+        menuListTable.separatorStyle = .none
+        menuListTable.isUserInteractionEnabled = true
+        menuListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
+        menuListTable.translatesAutoresizingMaskIntoConstraints = false
+        menuListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
+        menuListTable.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 16).isActive = true
+        menuListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
+        menuListTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        menuListTable.register(MenuTableViewCell.self, forCellReuseIdentifier: "MenuTableViewCell")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,7 +95,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemListTableViewCell") as! ItemListTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MenuTableViewCell") as! MenuTableViewCell
         cell.item = filteredMenuList[indexPath.row]
         cell.delegate = self
         return cell
@@ -128,7 +128,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        itemListTable.reloadData()
+        menuListTable.reloadData()
     }
     
     func updateItems() {

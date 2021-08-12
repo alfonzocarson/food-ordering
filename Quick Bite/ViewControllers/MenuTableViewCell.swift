@@ -1,5 +1,5 @@
 //
-//  ItemListTableViewCell.swift
+//  MenuTableViewCell.swift
 //  Quick Bite
 //
 //  Created by Mohammad on 07/08/21.
@@ -8,7 +8,7 @@
 import UIKit
 //import Material
 
-class ItemListTableViewCell: UITableViewCell {
+class MenuTableViewCell: UITableViewCell {
     
     var item: Item! {
         didSet{
@@ -94,7 +94,7 @@ class ItemListTableViewCell: UITableViewCell {
         stackView.axis = .vertical
         stackView.distribution = .equalSpacing
         stackView.alignment = .leading
-        stackView.leftAnchor.constraint(equalTo: cardView.leftAnchor,constant: 8).isActive = true
+        stackView.leftAnchor.constraint(equalTo: cardView.leftAnchor,constant: 16).isActive = true
         stackView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
         stackView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
         

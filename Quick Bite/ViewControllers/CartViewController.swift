@@ -18,7 +18,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 cartTotal += item.price * item.qty
             }
             orderButton.isHidden = cartList.count == 0 ? true : false
-            cartValue.text = cartList.count > 0 ? "Your Cart Value = ₹ \(cartTotal)" : "Your Cart is Empty"
+            cartValue.text = cartList.count > 0 ? "Total = ₹ \(cartTotal)" : "Your Food Cart is Empty"
         }
     }
     
@@ -73,7 +73,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartListTable.topAnchor.constraint(equalTo: cartLabel.bottomAnchor, constant: 16).isActive = true
         cartListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
         cartListTable.bottomAnchor.constraint(equalTo: cartValue.topAnchor, constant: -16).isActive = true
-        cartListTable.register(ItemListTableViewCell.self, forCellReuseIdentifier: "ItemListTableViewCell")
+        cartListTable.register(MenuTableViewCell.self, forCellReuseIdentifier: "MenuTableViewCell")
         
         cartValue.font = .boldSystemFont(ofSize: 20)
         cartValue.textAlignment = .center
@@ -106,7 +106,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemListTableViewCell") as! ItemListTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MenuTableViewCell") as! MenuTableViewCell
         cell.item = cartList[indexPath.row]
         cell.delegate = self
         return cell
