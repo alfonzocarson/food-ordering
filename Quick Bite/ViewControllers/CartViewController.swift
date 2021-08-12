@@ -73,7 +73,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartListTable.topAnchor.constraint(equalTo: cartLabel.bottomAnchor, constant: 16).isActive = true
         cartListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
         cartListTable.bottomAnchor.constraint(equalTo: cartValue.topAnchor, constant: -16).isActive = true
-        cartListTable.register(MenuTableViewCell.self, forCellReuseIdentifier: "MenuTableViewCell")
+        cartListTable.register(CartTableViewCell.self, forCellReuseIdentifier: "CartTableViewCell")
         
         cartValue.font = .boldSystemFont(ofSize: 20)
         cartValue.textAlignment = .center
@@ -106,7 +106,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MenuTableViewCell") as! MenuTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CartTableViewCell") as! CartTableViewCell
         cell.item = cartList[indexPath.row]
         cell.delegate = self
         return cell
