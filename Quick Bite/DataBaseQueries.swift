@@ -107,6 +107,11 @@ class DataBaseQueries{
         sqlite3_finalize(updateStatement)
     }
     
+    static func getOrders()->[Item]{
+        var ordersList = [Item]()
+        return ordersList
+    }
+    
     static func createAndOpenDB(){
         
         var db: OpaquePointer?

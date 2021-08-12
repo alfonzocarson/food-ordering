@@ -58,16 +58,16 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func setConstraints(){
-        title = "Menu"
+        
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
-        welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
         welcomeLabel.text = "Welcome to ABC Restaurant!"
         welcomeLabel.numberOfLines = 0
         welcomeLabel.font = .boldSystemFont(ofSize: 24)
         welcomeLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         welcomeLabel.adjustsFontForContentSizeCategory = true
         welcomeLabel.textAlignment = .center
+        welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
         welcomeLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         welcomeLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true

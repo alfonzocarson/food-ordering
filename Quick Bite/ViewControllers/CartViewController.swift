@@ -45,17 +45,16 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func setConstraints(){
-        title = "Cart"
         
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
-        cartLabel.translatesAutoresizingMaskIntoConstraints = false
         cartLabel.text = "Cart"
         cartLabel.numberOfLines = 0
         cartLabel.font = .boldSystemFont(ofSize: 24)
         cartLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         cartLabel.adjustsFontForContentSizeCategory = true
         cartLabel.textAlignment = .center
+        cartLabel.translatesAutoresizingMaskIntoConstraints = false
         cartLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         cartLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         cartLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
@@ -122,7 +121,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @objc func placeOrder(){
-        cartListTable.reloadData()
+        print("clciked place order")
     }
     
     func updateItems() {

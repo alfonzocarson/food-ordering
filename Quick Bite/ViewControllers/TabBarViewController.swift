@@ -50,6 +50,7 @@ class TabBarViewController: UITabBarController {
         vc[1].tabBarItem.badgeColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         menuVC.menuList = DataBaseQueries.getMenuItems()
         cartVC.cartList = DataBaseQueries.getCartItems()
+        ordersVC.ordersList = DataBaseQueries.getOrders()
         
         tabBar.barTintColor = .white
         tabBar.unselectedItemTintColor = .black
