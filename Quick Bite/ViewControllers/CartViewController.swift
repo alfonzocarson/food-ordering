@@ -48,7 +48,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
-        cartLabel.text = "Cart"
+        cartLabel.text = "Cart 🛒"
         cartLabel.numberOfLines = 0
         cartLabel.font = .boldSystemFont(ofSize: 24)
         cartLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
