@@ -22,7 +22,11 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    weak var delegate: SyncItems?
+    var session_id: Int = 0
+    var order_id: Int = 0
+    
+    weak var delegateMenu: SyncItems?
+    weak var delegateOrders: SyncItems?
     
     let cartLabel = UILabel()
     let cartListTable = UITableView()
@@ -121,12 +125,15 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @objc func placeOrder(){
-        print("clciked place order")
+        DataBaseQueries.placeOrder(cartList: cartList, session_id: session_id, order_id: order_id)
+        order_id += 1
+        updateItems()
+        delegateOrders?.syncItems()
     }
     
     func updateItems() {
         cartList = DataBaseQueries.getCartItems()
-        delegate?.syncItems()
+        delegateMenu?.syncItems()
     }
     
     func syncItems() {

@@ -7,18 +7,22 @@
 
 import UIKit
 
-class OrdersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class OrdersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SyncItems {
     
     var menuList = [Item]()
     
-    var ordersList = [Item]() {
-        didSet{
+    var ordersList: OrderList! {
+        didSet {
             ordersListTable.reloadData()
         }
     }
     
+    var session_id: Int = 0
+    
     var ordersListTable = UITableView()
     var ordersLabel = UILabel()
+    
+    weak var delegate2: SyncItems?
 
     override func viewDidLoad() {
         
@@ -47,19 +51,39 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         ordersLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         ordersLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         ordersLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        
+        ordersListTable.delegate = self
+        ordersListTable.dataSource = self
+        ordersListTable.allowsSelection = false
+        ordersListTable.isUserInteractionEnabled = true
+        ordersListTable.allowsSelection = false
+        ordersListTable.separatorStyle = .none
+        ordersListTable.isUserInteractionEnabled = true
+        ordersListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
+        ordersListTable.translatesAutoresizingMaskIntoConstraints = false
+        ordersListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
+        ordersListTable.topAnchor.constraint(equalTo: ordersLabel.bottomAnchor, constant: 16).isActive = true
+        ordersListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
+        ordersListTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
+        ordersListTable.register(OrderTableViewCell.self, forCellReuseIdentifier: "OrderTableViewCell")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ordersList.count
+        return ordersList.orders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "OrderTableViewCell") as! OrderTableViewCell
-        
+        cell.orderLabel.text = "\(ordersList.orders[indexPath.row]?.count ?? 0)"
         return cell
     }
-}
-
-class OrderTableViewCell: UITableViewCell{
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 112
+    }
+    
+    func syncItems() {
+        ordersList = DataBaseQueries.getOrders(session_id: session_id)
+        print("Reloaded orderlist")
+    }
 }

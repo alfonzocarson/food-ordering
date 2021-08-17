@@ -107,9 +107,118 @@ class DataBaseQueries{
         sqlite3_finalize(updateStatement)
     }
     
-    static func getOrders()->[Item]{
-        var ordersList = [Item]()
+    static func getOrders(session_id :Int)->OrderList {
+        var ordersList = OrderList()
+        let selectString = """
+        SELECT * FROM orderItems WHERE session_id = ? ORDER BY order_date DESC;
+        """
+        
+        var selectStatement: OpaquePointer?
+        if sqlite3_prepare_v2(dbQueue, selectString, -1, &selectStatement, nil) ==
+            SQLITE_OK {
+            
+            sqlite3_bind_int(selectStatement, 1, Int32(session_id))
+            
+            while sqlite3_step(selectStatement) == SQLITE_ROW {
+                _ = Int(sqlite3_column_int(selectStatement, 0))
+                let order_id = Int(sqlite3_column_int(selectStatement, 1))
+                _ = String(cString: sqlite3_column_text(selectStatement, 3))
+                let order: Order = Order(
+                    item_id: Int(sqlite3_column_int(selectStatement, 2)),
+                    order_qty: Int(sqlite3_column_int(selectStatement, 4)),
+                    order_price: Int(sqlite3_column_int(selectStatement, 5)))
+                var orders = ordersList.orders[order_id]
+                orders?.append(order)
+                //ordersList.orders.updateValue(orders ?? [order], forKey: order_id)
+                ordersList.orders[order_id, default: []].append(order)
+            }
+        }
+        else {
+            print("Select items statement is not prepared.")
+        }
+        sqlite3_finalize(selectStatement)
+        print(ordersList)
         return ordersList
+    }
+    
+    static func placeOrder(cartList: [Item], session_id: Int, order_id: Int){
+        for item in cartList {
+            DataBaseQueries.setQuantity(item_id: item.item_id, qty: 0)
+            let insertString = """
+            INSERT INTO orderItems (session_id, order_id, item_id, order_date, order_qty, order_price) VALUES (?, ?, ?, ?, ?, ?);
+            """
+            
+            var insertStatement: OpaquePointer?
+            
+            if sqlite3_prepare_v2(dbQueue, insertString, -1, &insertStatement, nil) ==
+                SQLITE_OK {
+                
+                sqlite3_bind_int(insertStatement, 1, Int32(session_id))
+                sqlite3_bind_int(insertStatement, 2, Int32(order_id))
+                sqlite3_bind_int(insertStatement, 3, Int32(item.item_id))
+                sqlite3_bind_text(insertStatement, 4, "\(NSDate.now)", -1, nil)
+                
+                sqlite3_bind_int(insertStatement, 5, Int32(item.qty))
+                sqlite3_bind_int(insertStatement, 6, Int32(item.price))
+                
+                if sqlite3_step(insertStatement) == SQLITE_DONE {
+                    print("item \(item.item_name) inserted")
+                }
+                else {
+                    print("item \(item.item_name) not inserted.")
+                }
+                sqlite3_reset(insertStatement)
+            }
+            else {
+                print("INSERT statement is not prepared.")
+            }
+            
+            sqlite3_finalize(insertStatement)
+        }
+    }
+    
+    static func getSessionID()->Int {
+        var session_id = 0
+        let selectString = """
+        SELECT MAX(session_id) FROM orderItems;
+        """
+        
+        var selectStatement: OpaquePointer?
+        if sqlite3_prepare_v2(dbQueue, selectString, -1, &selectStatement, nil) ==
+            SQLITE_OK {
+            
+            while sqlite3_step(selectStatement) == SQLITE_ROW {
+                session_id = max(session_id, Int(sqlite3_column_int(selectStatement, 0)))
+            }
+        }
+        else {
+            print("Select max statement is not prepared.")
+        }
+        sqlite3_finalize(selectStatement)
+        return session_id
+    }
+    
+    static func getOrderID(session_id: Int)->Int {
+        var order_id = -1
+        let selectString = """
+        SELECT MAX(order_id) FROM orderItems where session_id = ?;
+        """
+        
+        var selectStatement: OpaquePointer?
+        if sqlite3_prepare_v2(dbQueue, selectString, -1, &selectStatement, nil) ==
+            SQLITE_OK {
+            
+            sqlite3_bind_int(selectStatement, 1, Int32(session_id))
+            
+            while sqlite3_step(selectStatement) == SQLITE_ROW {
+                order_id = max(session_id, Int(sqlite3_column_int(selectStatement, 0)))
+            }
+        }
+        else {
+            print("Select max statement is not prepared.")
+        }
+        sqlite3_finalize(selectStatement)
+        return order_id == 0 ? 0 : order_id + 1
     }
     
     static func createAndOpenDB(){
@@ -138,7 +247,7 @@ class DataBaseQueries{
     }
     
     static func creteTables(){
-        let createTableString = """
+        var createTableString = """
         CREATE TABLE IF NOT EXISTS items(
         item_id INT PRIMARY KEY NOT NULL,
         item_name VARCHAR NOT NULL,
@@ -160,6 +269,34 @@ class DataBaseQueries{
             }
             else {
                 print("items table is not created.")
+            }
+        }
+        else {
+            print("\nCREATE TABLE statement is not prepared.")
+        }
+        
+        sqlite3_finalize(createTableStatement)
+        
+        createTableString = """
+        CREATE TABLE IF NOT EXISTS orderItems(
+        session_id INT NOT NULL,
+        order_id INT NOT NULL,
+        item_id INT NOT NULL,
+        order_date TIMESTAMP NOT NULL,
+        order_qty INT NOT NULL,
+        order_price INT NOT NULL,
+        PRIMARY KEY (order_id, item_id));
+        
+        """
+        
+        if sqlite3_prepare_v2(dbQueue, createTableString, -1, &createTableStatement, nil) ==
+            SQLITE_OK {
+            
+            if sqlite3_step(createTableStatement) == SQLITE_DONE {
+                print("orderItems table created.")
+            }
+            else {
+                print("orderItems table is not created.")
             }
         }
         else {

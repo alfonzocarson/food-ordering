@@ -22,6 +22,7 @@
 		54E1448C26BE932B009C9A34 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1448B26BE932B009C9A34 /* MenuViewController.swift */; };
 		54E1449026BE939A009C9A34 /* OrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1448F26BE939A009C9A34 /* OrdersViewController.swift */; };
 		54E1449226BE93BF009C9A34 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1449126BE93BF009C9A34 /* SettingsViewController.swift */; };
+		54FDEE6D26CA6A81001C7437 /* OrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FDEE6C26CA6A81001C7437 /* OrderTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		54E1448B26BE932B009C9A34 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		54E1448F26BE939A009C9A34 /* OrdersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersViewController.swift; sourceTree = "<group>"; };
 		54E1449126BE93BF009C9A34 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		54FDEE6C26CA6A81001C7437 /* OrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				54E1449126BE93BF009C9A34 /* SettingsViewController.swift */,
 				54C8060926C4F37B00A59F7C /* MenuTableViewCell.swift */,
 				54C8060B26C4F4FE00A59F7C /* CartTableViewCell.swift */,
+				54FDEE6C26CA6A81001C7437 /* OrderTableViewCell.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 				54A766A226BE921600D70B3F /* QRViewController.swift in Sources */,
 				54C8060A26C4F37B00A59F7C /* MenuTableViewCell.swift in Sources */,
 				54C8060C26C4F4FE00A59F7C /* CartTableViewCell.swift in Sources */,
+				54FDEE6D26CA6A81001C7437 /* OrderTableViewCell.swift in Sources */,
 				54A766A626BE928800D70B3F /* DataBaseQueries.swift in Sources */,
 				54E1448A26BE92FC009C9A34 /* HistoryViewController.swift in Sources */,
 				54E1449226BE93BF009C9A34 /* SettingsViewController.swift in Sources */,

@@ -18,6 +18,16 @@ struct Item {
     var category_name: String
 }
 
+struct Order {
+    var item_id: Int
+    var order_qty: Int
+    var order_price: Int
+}
+
+struct OrderList {
+    var orders = [Int:[Order]]()
+}
+
 protocol UpdateItems: AnyObject {
     func updateItems()
 }
