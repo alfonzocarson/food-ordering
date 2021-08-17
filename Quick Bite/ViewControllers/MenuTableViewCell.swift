@@ -93,7 +93,7 @@ class MenuTableViewCell: UITableViewCell {
         stackView.axis = .vertical
         stackView.distribution = .equalSpacing
         stackView.alignment = .leading
-        stackView.leftAnchor.constraint(equalTo: cardView.leftAnchor,constant: 16).isActive = true
+        stackView.leftAnchor.constraint(equalTo: cardView.leftAnchor,constant: 24).isActive = true
         stackView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
         stackView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
         
@@ -116,7 +116,7 @@ class MenuTableViewCell: UITableViewCell {
         add.layer.cornerRadius = 15
         add.translatesAutoresizingMaskIntoConstraints = false
         add.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
-        add.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        add.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -24).isActive = true
         add.addTarget(self, action: #selector(insertToCart), for: .touchUpInside)
         
         minusBtn.setImage(UIImage(named: "Minus"), for: .normal)
@@ -139,9 +139,9 @@ class MenuTableViewCell: UITableViewCell {
         qtyView.translatesAutoresizingMaskIntoConstraints = false
         qtyView.isUserInteractionEnabled = true
         qtyView.heightAnchor.constraint(equalTo: add.heightAnchor).isActive = true
-        qtyView.widthAnchor.constraint(equalTo: add.widthAnchor).isActive = true
+        qtyView.widthAnchor.constraint(equalTo: add.widthAnchor, constant: 16).isActive = true
         qtyView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
-        qtyView.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        qtyView.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -24).isActive = true
         qtyView.isHidden = true
         
         //        img.backgroundColor = .lightGray

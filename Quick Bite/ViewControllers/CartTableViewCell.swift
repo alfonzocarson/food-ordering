@@ -51,7 +51,7 @@ class CartTableViewCell: MenuTableViewCell {
         totalStack.alignment = .center
         totalStack.topAnchor.constraint(equalTo: super.cardView.topAnchor, constant: 16).isActive = true
         totalStack.bottomAnchor.constraint(equalTo: super.cardView.bottomAnchor, constant: -16).isActive = true
-        totalStack.rightAnchor.constraint(equalTo: super.cardView.rightAnchor, constant: -16).isActive = true
+        totalStack.rightAnchor.constraint(equalTo: super.cardView.rightAnchor, constant: -24).isActive = true
         totalStack.widthAnchor.constraint(equalTo: super.add.widthAnchor, constant: 0).isActive = true
         
     }

@@ -23,7 +23,7 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     var ordersLabel = UILabel()
     
     weak var delegate2: SyncItems?
-
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -74,7 +74,7 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "OrderTableViewCell") as! OrderTableViewCell
-        cell.orderLabel.text = "\(ordersList.orders[indexPath.row]?.count ?? 0)"
+        cell.order = ordersList.orders[ordersList.orders.count - indexPath.row - 1]
         return cell
     }
     
