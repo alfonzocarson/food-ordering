@@ -122,9 +122,9 @@ class DataBaseQueries{
             while sqlite3_step(selectStatement) == SQLITE_ROW {
                 _ = Int(sqlite3_column_int(selectStatement, 0))
                 let order_id = Int(sqlite3_column_int(selectStatement, 1))
-                _ = String(cString: sqlite3_column_text(selectStatement, 3))
                 let order: Order = Order(
                     item_id: Int(sqlite3_column_int(selectStatement, 2)),
+                    order_date: String(cString: sqlite3_column_text(selectStatement, 3)),
                     order_qty: Int(sqlite3_column_int(selectStatement, 4)),
                     order_price: Int(sqlite3_column_int(selectStatement, 5)))
                 var orders = ordersList.orders[order_id]
@@ -132,12 +132,12 @@ class DataBaseQueries{
                 //ordersList.orders.updateValue(orders ?? [order], forKey: order_id)
                 ordersList.orders[order_id, default: []].append(order)
             }
+            print(ordersList)
         }
         else {
             print("Select items statement is not prepared.")
         }
         sqlite3_finalize(selectStatement)
-        print(ordersList)
         return ordersList
     }
     
@@ -156,7 +156,12 @@ class DataBaseQueries{
                 sqlite3_bind_int(insertStatement, 1, Int32(session_id))
                 sqlite3_bind_int(insertStatement, 2, Int32(order_id))
                 sqlite3_bind_int(insertStatement, 3, Int32(item.item_id))
-                sqlite3_bind_text(insertStatement, 4, "\(NSDate.now)", -1, nil)
+                let date = Date()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .full
+                dateFormatter.timeZone = TimeZone(secondsFromGMT: 19800)
+                sqlite3_bind_text(insertStatement, 4, "\(dateFormatter.string(from: date))", -1, nil)
                 
                 sqlite3_bind_int(insertStatement, 5, Int32(item.qty))
                 sqlite3_bind_int(insertStatement, 6, Int32(item.price))
@@ -219,6 +224,38 @@ class DataBaseQueries{
         }
         sqlite3_finalize(selectStatement)
         return order_id == 0 ? 0 : order_id + 1
+    }
+    
+    static func getItem(item_id :Int) -> Item{
+        var item: Item = Item(item_id: item_id, item_name: "No such item", desc: "", price: 0, veg: false, qty: 0, category_id: 0, category_name: "")
+        let selectString = """
+        SELECT * FROM items where item_id = ?;
+        """
+        
+        var selectStatement: OpaquePointer?
+        if sqlite3_prepare_v2(dbQueue, selectString, -1, &selectStatement, nil) ==
+            SQLITE_OK {
+            
+            sqlite3_bind_int(selectStatement, 1, Int32(item_id))
+            while sqlite3_step(selectStatement) == SQLITE_ROW {
+                item = Item(
+                    item_id: Int(sqlite3_column_int(selectStatement, 0)),
+                    item_name: String(cString: sqlite3_column_text(selectStatement, 1)),
+                    desc: String(cString: sqlite3_column_text(selectStatement, 2)),
+                    price: Int(sqlite3_column_int(selectStatement, 3)),
+                    veg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
+                    qty: Int(sqlite3_column_int(selectStatement, 5)),
+                    category_id: Int(sqlite3_column_int(selectStatement, 6)),
+                    category_name: String(cString: sqlite3_column_text(selectStatement, 7))
+                )
+                return item
+            }
+        }
+        else {
+            print("Select max statement is not prepared.")
+        }
+        sqlite3_finalize(selectStatement)
+        return item
     }
     
     static func createAndOpenDB(){

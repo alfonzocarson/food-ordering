@@ -10,12 +10,26 @@ import UIKit
 class OrderTableViewCell: UITableViewCell {
     
     var orderLabel = UILabel()
+    var orderAmount = UILabel()
     var nextButton = UIButton()
     let cardView = UIView()
     
-    var order: [Order]! {
+    var orderList: [Order]! {
         didSet {
-            orderLabel.text = "\(order.count)"
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .long
+            dateFormatter.timeStyle = .full
+            dateFormatter.timeZone = TimeZone(secondsFromGMT: 19800)
+            let date = dateFormatter.date(from: orderList[0].order_date)
+            dateFormatter.dateFormat = "hh:mm a"
+            dateFormatter.amSymbol = "AM"
+            dateFormatter.pmSymbol = "PM"
+            orderLabel.text = "Order placed at \(dateFormatter.string(from: date!))"
+            var amount = 0
+            for order in orderList {
+                amount += order.order_qty * order.order_price
+            }
+            orderAmount.text = "₹  \(amount)"
         }
     }
 
@@ -32,6 +46,7 @@ class OrderTableViewCell: UITableViewCell {
     func setViews(){
         contentView.addSubview(cardView)
         contentView.addSubview(orderLabel)
+        contentView.addSubview(orderAmount)
         contentView.addSubview(nextButton)
     }
     
@@ -53,10 +68,19 @@ class OrderTableViewCell: UITableViewCell {
         
         orderLabel.text = "Hi"
         orderLabel.translatesAutoresizingMaskIntoConstraints = false
+        orderLabel.numberOfLines = 0
         orderLabel.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 24).isActive = true
         orderLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
-        orderLabel.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
-        orderLabel.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        orderLabel.rightAnchor.constraint(equalTo: nextButton.rightAnchor, constant: -8).isActive = true
+        orderLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.5).isActive = true
+        
+        orderAmount.text = "Hi"
+        orderAmount.translatesAutoresizingMaskIntoConstraints = false
+        orderAmount.numberOfLines = 0
+        orderAmount.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 24).isActive = true
+        orderAmount.topAnchor.constraint(equalTo: orderLabel.bottomAnchor, constant: 0).isActive = true
+        orderAmount.rightAnchor.constraint(equalTo: nextButton.rightAnchor, constant: -8).isActive = true
+        orderAmount.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
         
         nextButton.setImage(UIImage(named: "Next"), for: .normal)
         nextButton.translatesAutoresizingMaskIntoConstraints = false

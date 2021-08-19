@@ -20,6 +20,7 @@ struct Item {
 
 struct Order {
     var item_id: Int
+    var order_date: String
     var order_qty: Int
     var order_price: Int
 }

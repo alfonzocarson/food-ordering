@@ -76,7 +76,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         menuListTable.dataSource = self
         menuListTable.allowsSelection = false
         menuListTable.isUserInteractionEnabled = true
-        menuListTable.allowsSelection = false
         menuListTable.separatorStyle = .none
         menuListTable.isUserInteractionEnabled = true
         menuListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)

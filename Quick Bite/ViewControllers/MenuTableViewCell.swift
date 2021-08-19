@@ -139,7 +139,7 @@ class MenuTableViewCell: UITableViewCell {
         qtyView.translatesAutoresizingMaskIntoConstraints = false
         qtyView.isUserInteractionEnabled = true
         qtyView.heightAnchor.constraint(equalTo: add.heightAnchor).isActive = true
-        qtyView.widthAnchor.constraint(equalTo: add.widthAnchor, constant: 16).isActive = true
+        qtyView.widthAnchor.constraint(equalTo: add.widthAnchor, constant: 8).isActive = true
         qtyView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
         qtyView.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -24).isActive = true
         qtyView.isHidden = true

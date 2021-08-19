@@ -38,7 +38,6 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func setConstraints(){
-        
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
         ordersLabel.text = "Orders 📄"
@@ -54,9 +53,8 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         
         ordersListTable.delegate = self
         ordersListTable.dataSource = self
-        ordersListTable.allowsSelection = false
-        ordersListTable.isUserInteractionEnabled = true
-        ordersListTable.allowsSelection = false
+        //ordersListTable.allowsSelection = false
+        //ordersListTable.isUserInteractionEnabled = true
         ordersListTable.separatorStyle = .none
         ordersListTable.isUserInteractionEnabled = true
         ordersListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
@@ -74,7 +72,7 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "OrderTableViewCell") as! OrderTableViewCell
-        cell.order = ordersList.orders[ordersList.orders.count - indexPath.row - 1]
+        cell.orderList = ordersList.orders[ordersList.orders.count - indexPath.row - 1]
         return cell
     }
     
@@ -82,8 +80,23 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         return 112
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let orderDetails = OrderDetailsViewController()
+        orderDetails.orderList = ordersList.orders[ordersList.orders.count - indexPath.row - 1]
+        self.navigationController?.pushViewController(orderDetails, animated: true)
+    }
+    
     func syncItems() {
         ordersList = DataBaseQueries.getOrders(session_id: session_id)
         print("Reloaded orderlist")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true
     }
 }

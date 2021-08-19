@@ -36,7 +36,7 @@ class TabBarViewController: UITabBarController {
         
         vc.append(menuVC)
         vc.append(cartVC)
-        vc.append(ordersVC)
+        vc.append(UINavigationController(rootViewController: ordersVC))
         vc.append(historyVC)
         vc.append(settingsVC)
         

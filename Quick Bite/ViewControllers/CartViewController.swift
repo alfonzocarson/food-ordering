@@ -67,7 +67,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartListTable.dataSource = self
         cartListTable.allowsSelection = false
         cartListTable.isUserInteractionEnabled = true
-        cartListTable.allowsSelection = false
         cartListTable.separatorStyle = .none
         cartListTable.isUserInteractionEnabled = true
         cartListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
