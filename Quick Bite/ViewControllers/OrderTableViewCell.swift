@@ -29,7 +29,7 @@ class OrderTableViewCell: UITableViewCell {
             for order in orderList {
                 amount += order.order_qty * order.order_price
             }
-            orderAmount.text = "₹  \(amount)"
+            orderAmount.text = "Items: \(orderList.count)\nOrder Total: ₹ \(amount)"
         }
     }
 
@@ -67,20 +67,20 @@ class OrderTableViewCell: UITableViewCell {
         cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -8).isActive = true
         
         orderLabel.text = "Hi"
+        orderLabel.font = .systemFont(ofSize: 15)
         orderLabel.translatesAutoresizingMaskIntoConstraints = false
         orderLabel.numberOfLines = 0
-        orderLabel.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 24).isActive = true
-        orderLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        orderLabel.leftAnchor.constraint(equalTo: cardView.leftAnchor, constant: 24).isActive = true
+        orderLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
         orderLabel.rightAnchor.constraint(equalTo: nextButton.rightAnchor, constant: -8).isActive = true
-        orderLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.5).isActive = true
         
         orderAmount.text = "Hi"
+        orderAmount.font = .systemFont(ofSize: 16)
         orderAmount.translatesAutoresizingMaskIntoConstraints = false
         orderAmount.numberOfLines = 0
-        orderAmount.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 24).isActive = true
-        orderAmount.topAnchor.constraint(equalTo: orderLabel.bottomAnchor, constant: 0).isActive = true
+        orderAmount.leftAnchor.constraint(equalTo: cardView.leftAnchor, constant: 24).isActive = true
         orderAmount.rightAnchor.constraint(equalTo: nextButton.rightAnchor, constant: -8).isActive = true
-        orderAmount.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        orderAmount.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
         
         nextButton.setImage(UIImage(named: "Next"), for: .normal)
         nextButton.translatesAutoresizingMaskIntoConstraints = false

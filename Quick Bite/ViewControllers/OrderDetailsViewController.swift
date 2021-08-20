@@ -24,6 +24,7 @@ class OrderDetailsViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func setConstraints(){
+        navigationItem.title = "Order Summary"
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         detailsTable.delegate = self
         detailsTable.dataSource = self
@@ -37,7 +38,7 @@ class OrderDetailsViewController: UIViewController, UITableViewDataSource, UITab
         detailsTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         detailsTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
         detailsTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
-        
+        detailsTable.register(OrderDetailTableViewCell.self, forCellReuseIdentifier: "OrderDetailsTableViewCell")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -45,8 +46,12 @@ class OrderDetailsViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = "\(orderList[indexPath.row].order_qty) × \(DataBaseQueries.getItem(item_id: orderList[indexPath.row].item_id).item_name)"
+        let cell = tableView.dequeueReusableCell(withIdentifier: "OrderDetailsTableViewCell") as! OrderDetailTableViewCell
+        cell.order = orderList[indexPath.row]
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
     }
 }

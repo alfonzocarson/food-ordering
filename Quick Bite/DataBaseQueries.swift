@@ -132,7 +132,6 @@ class DataBaseQueries{
                 //ordersList.orders.updateValue(orders ?? [order], forKey: order_id)
                 ordersList.orders[order_id, default: []].append(order)
             }
-            print(ordersList)
         }
         else {
             print("Select items statement is not prepared.")
