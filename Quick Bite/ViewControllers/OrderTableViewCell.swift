@@ -9,30 +9,22 @@ import UIKit
 
 class OrderTableViewCell: UITableViewCell {
     
-    var orderLabel = UILabel()
-    var orderAmount = UILabel()
-    var nextButton = UIButton()
-    let cardView = UIView()
-    
-    var orderList: [Order]! {
-        didSet {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .long
-            dateFormatter.timeStyle = .full
-            dateFormatter.timeZone = TimeZone(secondsFromGMT: 19800)
-            let date = dateFormatter.date(from: orderList[0].order_date)
-            dateFormatter.dateFormat = "hh:mm a"
-            dateFormatter.amSymbol = "AM"
-            dateFormatter.pmSymbol = "PM"
-            orderLabel.text = "Order placed at \(dateFormatter.string(from: date!))"
-            var amount = 0
-            for order in orderList {
-                amount += order.order_qty * order.order_price
-            }
-            orderAmount.text = "Items: \(orderList.count)\nOrder Total: ₹ \(amount)"
+    var order: Order!{
+        didSet{
+            let item = DataBaseQueries.getItem(item_id: order.item_id)
+            itemLabel.text = "\(item.item_name)"
+            priceLabel.text = "\(order.order_qty)  ×  ₹\(order.order_price)"
+            totalPrice.text = "₹ \(order.order_qty * order.order_price)"
+            symbol.image = item.veg == true ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
         }
     }
-
+    var itemLabel = UILabel()
+    var symbol = UIImageView()
+    let cardView = UIView()
+    let priceLabel = UILabel()
+    let totalPrice = UILabel()
+    
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setViews()
@@ -42,12 +34,13 @@ class OrderTableViewCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
     func setViews(){
         contentView.addSubview(cardView)
-        contentView.addSubview(orderLabel)
-        contentView.addSubview(orderAmount)
-        contentView.addSubview(nextButton)
+        contentView.addSubview(itemLabel)
+        contentView.addSubview(priceLabel)
+        contentView.addSubview(totalPrice)
+        contentView.addSubview(symbol)
+        
     }
     
     func setConstraints(){
@@ -66,25 +59,23 @@ class OrderTableViewCell: UITableViewCell {
         cardView.rightAnchor.constraint(equalTo: contentView.rightAnchor,constant: -8).isActive = true
         cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -8).isActive = true
         
-        orderLabel.text = "Hi"
-        orderLabel.font = .systemFont(ofSize: 15)
-        orderLabel.translatesAutoresizingMaskIntoConstraints = false
-        orderLabel.numberOfLines = 0
-        orderLabel.leftAnchor.constraint(equalTo: cardView.leftAnchor, constant: 24).isActive = true
-        orderLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
-        orderLabel.rightAnchor.constraint(equalTo: nextButton.rightAnchor, constant: -8).isActive = true
+        symbol.translatesAutoresizingMaskIntoConstraints = false
+        symbol.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
+        symbol.rightAnchor.constraint(equalTo: cardView.rightAnchor, constant: -16).isActive = true
         
-        orderAmount.text = "Hi"
-        orderAmount.font = .systemFont(ofSize: 16)
-        orderAmount.translatesAutoresizingMaskIntoConstraints = false
-        orderAmount.numberOfLines = 0
-        orderAmount.leftAnchor.constraint(equalTo: cardView.leftAnchor, constant: 24).isActive = true
-        orderAmount.rightAnchor.constraint(equalTo: nextButton.rightAnchor, constant: -8).isActive = true
-        orderAmount.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
+        itemLabel.font = .systemFont(ofSize: 16)
+        itemLabel.translatesAutoresizingMaskIntoConstraints = false
+        itemLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
+        itemLabel.leftAnchor.constraint(equalTo: cardView.leftAnchor, constant: 24).isActive = true
         
-        nextButton.setImage(UIImage(named: "Next"), for: .normal)
-        nextButton.translatesAutoresizingMaskIntoConstraints = false
-        nextButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
-        nextButton.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -24).isActive = true
+        priceLabel.font = .systemFont(ofSize: 15)
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        priceLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
+        priceLabel.leftAnchor.constraint(equalTo: cardView.leftAnchor, constant: 24).isActive = true
+        
+        totalPrice.font = .systemFont(ofSize: 16)
+        totalPrice.translatesAutoresizingMaskIntoConstraints = false
+        totalPrice.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
+        totalPrice.rightAnchor.constraint(equalTo: cardView.rightAnchor, constant: -16).isActive = true
     }
 }

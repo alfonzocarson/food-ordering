@@ -36,7 +36,7 @@ class TabBarViewController: UITabBarController {
         
         vc.append(menuVC)
         vc.append(cartVC)
-        vc.append(UINavigationController(rootViewController: ordersVC))
+        vc.append(ordersVC)
         vc.append(historyVC)
         vc.append(settingsVC)
         
@@ -45,10 +45,10 @@ class TabBarViewController: UITabBarController {
         let tabNames = ["Menu","Cart","Orders","History","Settings"]
         
         for i in 0..<tabNames.count {
+            vc[i].tabBarItem.badgeColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
             vc[i].tabBarItem = UITabBarItem(title: tabNames[i], image: UIImage(named: tabNames[i]), selectedImage: UIImage(named: tabNames[i]))
         }
         
-        vc[1].tabBarItem.badgeColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         menuVC.menuList = DataBaseQueries.getMenuItems()
         cartVC.cartList = DataBaseQueries.getCartItems()
         cartVC.session_id = DataBaseQueries.getSessionID()

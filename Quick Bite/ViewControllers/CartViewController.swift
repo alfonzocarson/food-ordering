@@ -18,7 +18,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 cartTotal += item.price * item.qty
             }
             orderButton.isHidden = cartList.count == 0 ? true : false
-            cartValue.text = cartList.count > 0 ? "Total = ₹ \(cartTotal)" : "Your Food Cart is Empty"
+            cartListTable.isHidden = cartList.count == 0 ? true : false
+            emptyCartView.isHidden = cartList.count == 0 ? false : true
         }
     }
     
@@ -28,9 +29,11 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     weak var delegateMenu: SyncItems?
     weak var delegateOrders: SyncItems?
     
+    let emptyCartView = UIView()
+    let emptyCartImage = UIImageView()
+    let emptyCartLabel = UILabel()
     let cartLabel = UILabel()
     let cartListTable = UITableView()
-    let cartValue = UILabel()
     let orderButton = UIButton()
     
     override func viewDidLoad() {
@@ -44,15 +47,18 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     func setViews(){
         view.addSubview(cartLabel)
         view.addSubview(cartListTable)
-        view.addSubview(cartValue)
+        view.addSubview(emptyCartView)
         view.addSubview(orderButton)
+        
+        emptyCartView.addSubview(emptyCartImage)
+        emptyCartView.addSubview(emptyCartLabel)
     }
     
     func setConstraints(){
         
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
-        cartLabel.text = "Cart 🛒"
+        cartLabel.text = "Cart"
         cartLabel.numberOfLines = 0
         cartLabel.font = .boldSystemFont(ofSize: 24)
         cartLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
@@ -74,20 +80,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
         cartListTable.topAnchor.constraint(equalTo: cartLabel.bottomAnchor, constant: 16).isActive = true
         cartListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
-        cartListTable.bottomAnchor.constraint(equalTo: cartValue.topAnchor, constant: -16).isActive = true
+        cartListTable.bottomAnchor.constraint(equalTo: orderButton.topAnchor, constant: -8).isActive = true
         cartListTable.register(CartTableViewCell.self, forCellReuseIdentifier: "CartTableViewCell")
-        
-        cartValue.font = .boldSystemFont(ofSize: 20)
-        cartValue.textAlignment = .center
-        cartValue.textColor = .black// #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
-        cartValue.backgroundColor = .white
-        cartValue.layer.cornerRadius = 17
-        cartValue.layer.masksToBounds = true
-        cartValue.translatesAutoresizingMaskIntoConstraints = false
-        cartValue.heightAnchor.constraint(equalTo: orderButton.heightAnchor, constant: 0).isActive = true
-        cartValue.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        cartValue.bottomAnchor.constraint(equalTo: orderButton.topAnchor, constant: -8).isActive = true
-        cartValue.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         
         orderButton.setTitle("Place Order", for: .normal)
         orderButton.titleLabel?.font = .boldSystemFont(ofSize: 20)
@@ -99,8 +93,38 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         orderButton.translatesAutoresizingMaskIntoConstraints = false
         orderButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         orderButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-        orderButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
+        orderButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8).isActive = true
         orderButton.addTarget(self, action: #selector(placeOrder), for: .touchUpInside)
+        
+        emptyCartView.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
+        emptyCartView.layer.cornerRadius = 7.0
+        emptyCartView.layer.masksToBounds = false
+        emptyCartView.layer.shadowColor = UIColor.black.cgColor.copy(alpha: 0.2)
+        emptyCartView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        emptyCartView.layer.shadowOpacity = 0.8
+        emptyCartView.translatesAutoresizingMaskIntoConstraints = false
+        emptyCartView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: 0).isActive = true
+        emptyCartView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: 0).isActive = true
+        emptyCartView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -48).isActive = true
+        emptyCartView.heightAnchor.constraint(equalTo: emptyCartView.widthAnchor, multiplier: 0.5).isActive = true
+        
+        emptyCartImage.contentMode = .scaleAspectFit
+        emptyCartImage.translatesAutoresizingMaskIntoConstraints = false
+        emptyCartImage.image = UIImage(named: "EmptyCart")
+        emptyCartImage.leftAnchor.constraint(equalTo: emptyCartView.leftAnchor, constant: 16).isActive = true
+        emptyCartImage.centerYAnchor.constraint(equalTo: emptyCartView.centerYAnchor, constant: 0).isActive = true
+        emptyCartImage.widthAnchor.constraint(equalTo: emptyCartView.widthAnchor, multiplier: 0.2).isActive = true
+        
+        emptyCartLabel.sizeToFit()
+        emptyCartLabel.numberOfLines = 0
+        emptyCartLabel.text = "Your Cart is empty.\n\nTap Add from Menu to add items to cart."
+        emptyCartLabel.textAlignment = .center
+        emptyCartLabel.font = .systemFont(ofSize: 15)
+        emptyCartLabel.translatesAutoresizingMaskIntoConstraints = false
+        emptyCartLabel.leftAnchor.constraint(equalTo: emptyCartImage.rightAnchor, constant: 16).isActive = true
+        emptyCartLabel.rightAnchor.constraint(equalTo: emptyCartView.rightAnchor, constant: -16).isActive = true
+        emptyCartLabel.centerYAnchor.constraint(equalTo: emptyCartView.centerYAnchor, constant: 0).isActive = true
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -37,7 +37,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
-        historyLabel.text = "History 📖"
+        historyLabel.text = "History"
         historyLabel.numberOfLines = 0
         historyLabel.font = .boldSystemFont(ofSize: 24)
         historyLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
