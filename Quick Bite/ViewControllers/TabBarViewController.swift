@@ -8,6 +8,7 @@
 import UIKit
 
 
+@available(iOS 13.0, *)
 class TabBarViewController: UITabBarController {
     
     var vc: [UIViewController] = []
@@ -58,7 +59,7 @@ class TabBarViewController: UITabBarController {
         
         tabBar.barTintColor = .white
         tabBar.unselectedItemTintColor = .black
-        tabBar.tintColor = .red// #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+        tabBar.tintColor = .red // #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         
     }
 }

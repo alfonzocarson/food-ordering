@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 
+@available(iOS 13.0, *)
 class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate{
     
 //    let squareView = UIImageView()

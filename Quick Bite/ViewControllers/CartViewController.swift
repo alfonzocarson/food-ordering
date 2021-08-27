@@ -60,13 +60,13 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         cartLabel.text = "Cart"
         cartLabel.numberOfLines = 0
-        cartLabel.font = .boldSystemFont(ofSize: 24)
+        cartLabel.font = .boldSystemFont(ofSize: 22)
         cartLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         cartLabel.adjustsFontForContentSizeCategory = true
-        cartLabel.textAlignment = .center
+        cartLabel.textAlignment = .left
         cartLabel.translatesAutoresizingMaskIntoConstraints = false
         cartLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        cartLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
+        cartLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
         cartLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         
         cartListTable.delegate = self
@@ -78,7 +78,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         cartListTable.translatesAutoresizingMaskIntoConstraints = false
         cartListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
-        cartListTable.topAnchor.constraint(equalTo: cartLabel.bottomAnchor, constant: 16).isActive = true
+        cartListTable.topAnchor.constraint(equalTo: cartLabel.bottomAnchor, constant: 8).isActive = true
         cartListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
         cartListTable.bottomAnchor.constraint(equalTo: orderButton.topAnchor, constant: -8).isActive = true
         cartListTable.register(CartTableViewCell.self, forCellReuseIdentifier: "CartTableViewCell")
@@ -117,7 +117,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         emptyCartLabel.sizeToFit()
         emptyCartLabel.numberOfLines = 0
-        emptyCartLabel.text = "Your Cart is empty.\n\nTap Add from Menu to add items to cart."
+        emptyCartLabel.text = "Your cart is empty.\n\nAdd something from the menu."
         emptyCartLabel.textAlignment = .center
         emptyCartLabel.font = .systemFont(ofSize: 15)
         emptyCartLabel.translatesAutoresizingMaskIntoConstraints = false

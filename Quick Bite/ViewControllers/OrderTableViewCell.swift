@@ -16,10 +16,21 @@ class OrderTableViewCell: UITableViewCell {
             priceLabel.text = "\(order.order_qty)  ×  ₹\(order.order_price)"
             totalPrice.text = "₹ \(order.order_qty * order.order_price)"
             symbol.image = item.veg == true ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .long
+            dateFormatter.timeStyle = .full
+            dateFormatter.timeZone = TimeZone(secondsFromGMT: 19800)
+            let date = dateFormatter.date(from: order.order_date)
+            dateFormatter.dateFormat = "hh:mm a"
+            dateFormatter.amSymbol = "AM"
+            dateFormatter.pmSymbol = "PM"
+            let difference = Date().timeIntervalSince(date!)
+            itemStatus.image = difference >= 1200 ? UIImage(named: "Served") : UIImage(named: "Cooking")
         }
     }
     var itemLabel = UILabel()
     var symbol = UIImageView()
+    let itemStatus = UIImageView()
     let cardView = UIView()
     let priceLabel = UILabel()
     let totalPrice = UILabel()
@@ -38,6 +49,7 @@ class OrderTableViewCell: UITableViewCell {
         contentView.addSubview(cardView)
         contentView.addSubview(itemLabel)
         contentView.addSubview(priceLabel)
+        contentView.addSubview(itemStatus)
         contentView.addSubview(totalPrice)
         contentView.addSubview(symbol)
         
@@ -61,7 +73,7 @@ class OrderTableViewCell: UITableViewCell {
         
         symbol.translatesAutoresizingMaskIntoConstraints = false
         symbol.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
-        symbol.rightAnchor.constraint(equalTo: cardView.rightAnchor, constant: -16).isActive = true
+        symbol.rightAnchor.constraint(equalTo: itemStatus.leftAnchor, constant: -20).isActive = true
         
         itemLabel.font = .systemFont(ofSize: 16)
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -76,6 +88,13 @@ class OrderTableViewCell: UITableViewCell {
         totalPrice.font = .systemFont(ofSize: 16)
         totalPrice.translatesAutoresizingMaskIntoConstraints = false
         totalPrice.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
-        totalPrice.rightAnchor.constraint(equalTo: cardView.rightAnchor, constant: -16).isActive = true
+        totalPrice.rightAnchor.constraint(equalTo: itemStatus.leftAnchor, constant: -20).isActive = true
+        
+        itemStatus.contentMode = .scaleAspectFit
+        itemStatus.translatesAutoresizingMaskIntoConstraints = false
+        itemStatus.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 20).isActive = true
+        itemStatus.rightAnchor.constraint(equalTo: cardView.rightAnchor, constant: -20).isActive = true
+        itemStatus.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -20).isActive = true
+        itemStatus.widthAnchor.constraint(equalTo: itemStatus.heightAnchor, constant: 0).isActive = true
     }
 }

@@ -8,12 +8,13 @@
 import UIKit
 import SQLite3
 
+@available(iOS 13.0, *)
 class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, UISearchBarDelegate, UpdateItems, SyncItems  {
     
     var menuList = [Item](){
         didSet{
             filteredMenuList = menuList
-            updateSearchResults(for: resultSearchController)
+            //updateSearchResults(for: resultSearchController)
         }
     }
     
@@ -39,22 +40,22 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func setViews(){
         view.addSubview(welcomeLabel)
         view.addSubview(menuListTable)
-        resultSearchController = ({
-            let controller = UISearchController(searchResultsController: nil)
-            controller.searchResultsUpdater = self
-            controller.obscuresBackgroundDuringPresentation = false
-            controller.searchBar.sizeToFit()
-            controller.searchBar.placeholder = "Search here..."
-            controller.searchBar.searchTextField.backgroundColor = .white
-            controller.searchBar.layer.cornerRadius = 7.0
-            controller.searchBar.barTintColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
-            controller.searchBar.delegate = self
-            
-            menuListTable.tableHeaderView = controller.searchBar
-            menuListTable.tableHeaderView?.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
-            
-            return controller
-        })()
+//        resultSearchController = ({
+//            let controller = UISearchController(searchResultsController: nil)
+//            controller.searchResultsUpdater = self
+//            controller.obscuresBackgroundDuringPresentation = false
+//            controller.searchBar.sizeToFit()
+//            controller.searchBar.placeholder = "Search here..."
+//            controller.searchBar.searchTextField.backgroundColor = .white
+//            controller.searchBar.layer.cornerRadius = 7.0
+//            controller.searchBar.barTintColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
+//            controller.searchBar.delegate = self
+//            
+//            menuListTable.tableHeaderView = controller.searchBar
+//            menuListTable.tableHeaderView?.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+//            
+//            return controller
+//        })()
     }
     
     func setConstraints(){
@@ -69,7 +70,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         welcomeLabel.textAlignment = .center
         welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
         welcomeLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
+        welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
         welcomeLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         
         menuListTable.delegate = self
@@ -81,7 +82,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         menuListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         menuListTable.translatesAutoresizingMaskIntoConstraints = false
         menuListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
-        menuListTable.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 16).isActive = true
+        menuListTable.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 8).isActive = true
         menuListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
         menuListTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
         menuListTable.register(MenuTableViewCell.self, forCellReuseIdentifier: "MenuTableViewCell")

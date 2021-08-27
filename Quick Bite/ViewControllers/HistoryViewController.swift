@@ -39,13 +39,13 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         
         historyLabel.text = "History"
         historyLabel.numberOfLines = 0
-        historyLabel.font = .boldSystemFont(ofSize: 24)
+        historyLabel.font = .boldSystemFont(ofSize: 22)
         historyLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         historyLabel.adjustsFontForContentSizeCategory = true
-        historyLabel.textAlignment = .center
+        historyLabel.textAlignment = .left
         historyLabel.translatesAutoresizingMaskIntoConstraints = false
         historyLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        historyLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
+        historyLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
         historyLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
     }
     
