@@ -71,13 +71,14 @@ class SettingsViewController: UIViewController {
     let aboutLabel = UILabel()
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
+        
         setViews()
         setConstraints()
     }
     
     func setViews(){
+        
         view.addSubview(nameLabel)
         view.addSubview(emailLabel)
         view.addSubview(phoneLabel)
@@ -141,6 +142,7 @@ class SettingsViewController: UIViewController {
     }
     
     func setConstraints(){
+        
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
         nameLabel.text = "A Random Name"
@@ -413,5 +415,4 @@ class SettingsViewController: UIViewController {
         aboutLabel.font = .systemFont(ofSize: 15)
         aboutLabel.translatesAutoresizingMaskIntoConstraints = false
     }
-    
 }

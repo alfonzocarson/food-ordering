@@ -20,6 +20,7 @@ class CartTableViewCell: MenuTableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         reSetViews()
         reSetConstraints()
     }
@@ -29,6 +30,7 @@ class CartTableViewCell: MenuTableViewCell {
     }
     
     func reSetViews(){
+        
         super.qtyView.removeFromSuperview()
         totalStack.addArrangedSubview(super.qtyView)
         totalStack.addArrangedSubview(totalPriceLabel)
@@ -57,6 +59,7 @@ class CartTableViewCell: MenuTableViewCell {
     }
     
     @objc override func insertToCart(){
+        
         plusTaped()
     }
     

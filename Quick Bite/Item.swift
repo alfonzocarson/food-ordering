@@ -36,3 +36,12 @@ protocol UpdateItems: AnyObject {
 protocol SyncItems: AnyObject {
     func syncItems()
 }
+
+protocol DismissDelegate: AnyObject {
+    func didDismiss()
+}
+
+protocol ChangeCurrentVC: AnyObject {
+    func changeToOrdersVC()
+    func changeToMenuVC()
+}

@@ -48,6 +48,7 @@ class MenuTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         setViews()
         setConstraints()
     }
@@ -57,6 +58,7 @@ class MenuTableViewCell: UITableViewCell {
     }
     
     func setViews(){
+        
         contentView.addSubview(cardView)
         contentView.addSubview(img)
         contentView.addSubview(stackView)
@@ -107,7 +109,6 @@ class MenuTableViewCell: UITableViewCell {
         priceLabel.text = "₹ "
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        //add.setImage(UIImage(named: "Add"), for: .normal)
         add.setTitle("   ADD   ", for: .normal)
         add.titleLabel?.font = .boldSystemFont(ofSize: 16)
         add.setTitleColor(.white, for: .normal)
@@ -143,14 +144,6 @@ class MenuTableViewCell: UITableViewCell {
         qtyView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
         qtyView.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -24).isActive = true
         qtyView.isHidden = true
-        
-        //        img.backgroundColor = .lightGray
-        //        img.layer.cornerRadius = 32
-        //        img.translatesAutoresizingMaskIntoConstraints = false
-        //        img.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        //        img.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
-        //        img.rightAnchor.constraint(equalTo: img.leftAnchor, constant: 64).isActive = true
-        //        img.heightAnchor.constraint(equalTo: img.widthAnchor, constant: 0).isActive = true
     }
     
     @objc func insertToCart(){

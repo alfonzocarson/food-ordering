@@ -96,7 +96,7 @@ class DataBaseQueries{
                 print("item \(item_id) qty update")
             }
             else {
-                print("item \(item_id) qty not updated.")
+                print("item \(item_id) qty not updated.\(String(cString: sqlite3_errmsg(dbQueue)))")
             }
             sqlite3_reset(updateStatement)
         }
@@ -140,6 +140,14 @@ class DataBaseQueries{
         return ordersList
     }
     
+    static func getHistory(session_id: Int) -> [OrderList]{
+        var historyList = [OrderList]()
+        for session in 1..<session_id {
+            historyList.append(DataBaseQueries.getOrders(session_id: session))
+        }
+        return historyList
+    }
+    
     static func placeOrder(cartList: [Item], session_id: Int, order_id: Int){
         for item in cartList {
             DataBaseQueries.setQuantity(item_id: item.item_id, qty: 0)
@@ -158,7 +166,7 @@ class DataBaseQueries{
                 let date = Date()
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateStyle = .long
-                dateFormatter.timeStyle = .full
+                dateFormatter.timeStyle = .long
                 dateFormatter.timeZone = TimeZone(secondsFromGMT: 19800)
                 sqlite3_bind_text(insertStatement, 4, "\(dateFormatter.string(from: date))", -1, nil)
                 
@@ -169,7 +177,7 @@ class DataBaseQueries{
                     print("item \(item.item_name) inserted")
                 }
                 else {
-                    print("item \(item.item_name) not inserted.")
+                    print("item \(item.item_name) not inserted.\(String(cString: sqlite3_errmsg(dbQueue)))")
                 }
                 sqlite3_reset(insertStatement)
             }
@@ -182,7 +190,7 @@ class DataBaseQueries{
     }
     
     static func getSessionID()->Int {
-        var session_id = 0
+        var session_id = Int.max
         let selectString = """
         SELECT MAX(session_id) FROM orderItems;
         """
@@ -192,14 +200,14 @@ class DataBaseQueries{
             SQLITE_OK {
             
             while sqlite3_step(selectStatement) == SQLITE_ROW {
-                session_id = max(session_id, Int(sqlite3_column_int(selectStatement, 0)))
+                session_id = min(session_id, Int(sqlite3_column_int(selectStatement, 0)))
             }
         }
         else {
             print("Select max statement is not prepared.")
         }
         sqlite3_finalize(selectStatement)
-        return session_id
+        return session_id + 1
     }
     
     static func getOrderID(session_id: Int)->Int {
@@ -215,7 +223,7 @@ class DataBaseQueries{
             sqlite3_bind_int(selectStatement, 1, Int32(session_id))
             
             while sqlite3_step(selectStatement) == SQLITE_ROW {
-                order_id = max(session_id, Int(sqlite3_column_int(selectStatement, 0)))
+                order_id = max(0, Int(sqlite3_column_int(selectStatement, 0)))
             }
         }
         else {
@@ -282,6 +290,15 @@ class DataBaseQueries{
         dbQueue = db
     }
     
+    static func closeDB(){
+        if sqlite3_close(dbQueue) == SQLITE_OK {
+            print("Closed DB")
+        }
+        else {
+            print("NotClosed DB")
+        }
+    }
+    
     static func creteTables(){
         var createTableString = """
         CREATE TABLE IF NOT EXISTS items(
@@ -321,7 +338,7 @@ class DataBaseQueries{
         order_date TIMESTAMP NOT NULL,
         order_qty INT NOT NULL,
         order_price INT NOT NULL,
-        PRIMARY KEY (order_id, item_id));
+        PRIMARY KEY (session_id, order_id, item_id));
         
         """
         

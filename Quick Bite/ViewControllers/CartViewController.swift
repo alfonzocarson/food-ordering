@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UpdateItems, SyncItems {
+class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UpdateItems {
     
     var cartList = [Item](){
         didSet{
@@ -26,9 +26,11 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     var session_id: Int = 0
     var order_id: Int = 0
     
-    weak var delegateMenu: SyncItems?
+    weak var delegateSync: SyncItems?
     weak var delegateOrders: SyncItems?
+    weak var delegateChangeVC: ChangeCurrentVC?
     
+    let menuButton = UIButton()
     let emptyCartView = UIView()
     let emptyCartImage = UIImageView()
     let emptyCartLabel = UILabel()
@@ -39,12 +41,12 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
         setViews()
         setConstraints()
     }
     
     func setViews(){
+        
         view.addSubview(cartLabel)
         view.addSubview(cartListTable)
         view.addSubview(emptyCartView)
@@ -52,6 +54,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         emptyCartView.addSubview(emptyCartImage)
         emptyCartView.addSubview(emptyCartLabel)
+        emptyCartView.addSubview(menuButton)
     }
     
     func setConstraints(){
@@ -74,7 +77,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartListTable.allowsSelection = false
         cartListTable.isUserInteractionEnabled = true
         cartListTable.separatorStyle = .none
-        cartListTable.isUserInteractionEnabled = true
         cartListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         cartListTable.translatesAutoresizingMaskIntoConstraints = false
         cartListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
@@ -117,14 +119,26 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         emptyCartLabel.sizeToFit()
         emptyCartLabel.numberOfLines = 0
-        emptyCartLabel.text = "Your cart is empty.\n\nAdd something from the menu."
+        emptyCartLabel.text = "Your cart is empty.\nAdd something from the menu."
         emptyCartLabel.textAlignment = .center
         emptyCartLabel.font = .systemFont(ofSize: 15)
         emptyCartLabel.translatesAutoresizingMaskIntoConstraints = false
         emptyCartLabel.leftAnchor.constraint(equalTo: emptyCartImage.rightAnchor, constant: 16).isActive = true
         emptyCartLabel.rightAnchor.constraint(equalTo: emptyCartView.rightAnchor, constant: -16).isActive = true
-        emptyCartLabel.centerYAnchor.constraint(equalTo: emptyCartView.centerYAnchor, constant: 0).isActive = true
+        emptyCartLabel.bottomAnchor.constraint(equalTo: emptyCartView.centerYAnchor, constant: -8).isActive = true
         
+        menuButton.sizeToFit()
+        menuButton.setTitle("   Menu   ", for: .normal)
+        menuButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        menuButton.setTitleColor(.white, for: .normal)
+        menuButton.backgroundColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+        menuButton.tintColor = .white
+        menuButton.layer.cornerRadius = 15
+        menuButton.translatesAutoresizingMaskIntoConstraints = false
+        menuButton.translatesAutoresizingMaskIntoConstraints = false
+        menuButton.centerXAnchor.constraint(equalTo: emptyCartLabel.centerXAnchor).isActive = true
+        menuButton.topAnchor.constraint(equalTo: emptyCartView.centerYAnchor, constant: 8).isActive = true
+        menuButton.addTarget(self, action: #selector(menuButtonTap), for: .touchUpInside)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -142,24 +156,40 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         return 112
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let delete = UIContextualAction(style: .destructive,
+                                       title: "    Delete    ") { [weak self] (action, view, completionHandler) in
+                                        self?.removeItem(indexPath: indexPath)
+                                        completionHandler(true)
+        }
+        delete.backgroundColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+        let configuration = UISwipeActionsConfiguration(actions: [delete])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         cartListTable.reloadData()
         orderButton.isHidden = cartList.count == 0 ? true : false
+    }
+    
+    func removeItem(indexPath: IndexPath){
+        DataBaseQueries.setQuantity(item_id: cartList[indexPath.row].item_id, qty: 0)
+        updateItems()
     }
     
     @objc func placeOrder(){
         DataBaseQueries.placeOrder(cartList: cartList, session_id: session_id, order_id: order_id)
         order_id += 1
         updateItems()
-        delegateOrders?.syncItems()
+        delegateChangeVC?.changeToOrdersVC()
+    }
+    
+    @objc func menuButtonTap(){
+        delegateChangeVC?.changeToMenuVC()
     }
     
     func updateItems() {
-        cartList = DataBaseQueries.getCartItems()
-        delegateMenu?.syncItems()
-    }
-    
-    func syncItems() {
-        cartList = DataBaseQueries.getCartItems()
+        delegateSync?.syncItems()
     }
 }

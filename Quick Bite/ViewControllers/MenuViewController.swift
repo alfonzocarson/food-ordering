@@ -9,7 +9,7 @@ import UIKit
 import SQLite3
 
 @available(iOS 13.0, *)
-class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, UISearchBarDelegate, UpdateItems, SyncItems  {
+class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, UISearchBarDelegate, UpdateItems  {
     
     var menuList = [Item](){
         didSet{
@@ -24,20 +24,21 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
-    weak var delegate: SyncItems?
+    weak var delegateSync: SyncItems?
     
     let welcomeLabel = UILabel()
     let menuListTable = UITableView()
     var resultSearchController = UISearchController()
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
+        
         setViews()
         setConstraints()
     }
     
     func setViews(){
+        
         view.addSubview(welcomeLabel)
         view.addSubview(menuListTable)
 //        resultSearchController = ({
@@ -50,10 +51,10 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
 //            controller.searchBar.layer.cornerRadius = 7.0
 //            controller.searchBar.barTintColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
 //            controller.searchBar.delegate = self
-//            
+//
 //            menuListTable.tableHeaderView = controller.searchBar
 //            menuListTable.tableHeaderView?.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
-//            
+//
 //            return controller
 //        })()
     }
@@ -62,12 +63,12 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
-        welcomeLabel.text = "Welcome to Random Restaurant!"
+        welcomeLabel.text = "Random Restaurant"
         welcomeLabel.numberOfLines = 0
-        welcomeLabel.font = .boldSystemFont(ofSize: 24)
+        welcomeLabel.font = .boldSystemFont(ofSize: 22)
         welcomeLabel.textColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         welcomeLabel.adjustsFontForContentSizeCategory = true
-        welcomeLabel.textAlignment = .center
+        welcomeLabel.textAlignment = .left
         welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
         welcomeLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
@@ -78,7 +79,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         menuListTable.allowsSelection = false
         menuListTable.isUserInteractionEnabled = true
         menuListTable.separatorStyle = .none
-        menuListTable.isUserInteractionEnabled = true
         menuListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         menuListTable.translatesAutoresizingMaskIntoConstraints = false
         menuListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
@@ -89,12 +89,10 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return filteredMenuList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "MenuTableViewCell") as! MenuTableViewCell
         cell.item = filteredMenuList[indexPath.row]
         cell.delegate = self
@@ -102,12 +100,10 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
         return 112
     }
     
     func updateSearchResults(for searchController: UISearchController) {
-        
         let searchString = searchController.searchBar.text!.lowercased()
         if(searchString == "") {
             filteredMenuList = menuList
@@ -123,7 +119,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        
         filteredMenuList = menuList
     }
     
@@ -132,11 +127,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func updateItems() {
-        menuList = DataBaseQueries.getMenuItems()
-        delegate?.syncItems()
-    }
-    
-    func syncItems() {
-        menuList = DataBaseQueries.getMenuItems()
+        //menuList = DataBaseQueries.getMenuItems()
+        delegateSync?.syncItems()
     }
 }

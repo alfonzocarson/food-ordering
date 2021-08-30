@@ -25,9 +25,10 @@ class OrderTableViewCell: UITableViewCell {
             dateFormatter.amSymbol = "AM"
             dateFormatter.pmSymbol = "PM"
             let difference = Date().timeIntervalSince(date!)
-            itemStatus.image = difference >= 1200 ? UIImage(named: "Served") : UIImage(named: "Cooking")
+            itemStatus.image = difference >= 60 ? UIImage(named: "Served") : UIImage(named: "Cooking")
         }
     }
+    
     var itemLabel = UILabel()
     var symbol = UIImageView()
     let itemStatus = UIImageView()
@@ -38,6 +39,7 @@ class OrderTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         setViews()
         setConstraints()
     }
@@ -45,14 +47,15 @@ class OrderTableViewCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
     func setViews(){
+        
         contentView.addSubview(cardView)
         contentView.addSubview(itemLabel)
         contentView.addSubview(priceLabel)
         contentView.addSubview(itemStatus)
         contentView.addSubview(totalPrice)
         contentView.addSubview(symbol)
-        
     }
     
     func setConstraints(){

@@ -7,14 +7,16 @@
 
 import UIKit
 
-class OrdersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SyncItems {
+class OrdersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    var session_id: Int = 0
     var ordersList: OrderList! {
         didSet {
             self.tabBarItem.badgeValue = ordersList.orders.count > 0 ? String(ordersList.orders.count) : nil
             ordersListTable.isHidden = ordersList.orders.count > 0 ? false : true
             billView.isHidden = ordersList.orders.count > 0 ? false : true
-            payButton.isHidden = ordersList.orders.count > 0 ? false : true
+            ordersList.orders.count > 0 ? payButton.setTitle("Choose payment method", for: .normal) : payButton.setTitle("Exit", for: .normal)
+            itemTotal = 0
             for (_, order) in ordersList.orders {
                 for item in order {
                     itemTotal += item.order_qty * item.order_price
@@ -23,8 +25,6 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
             ordersListTable.reloadData()
         }
     }
-    
-    var session_id: Int = 0
     var itemTotal = 0 {
         didSet{
             itemTotalAmount.text = "₹\(Double(itemTotal) + 0.0)"
@@ -32,6 +32,8 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
             grandTotalAmount.text = "₹\(Double(itemTotal) + Double(itemTotal) * 0.05)"
         }
     }
+    
+    weak var dismissDelegate: DismissDelegate?
     
     let ordersListTable = UITableView()
     let ordersLabel = UILabel()
@@ -50,11 +52,9 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     let taxAmount = UILabel()
     let grandTotalAmount = UILabel()
     
-    weak var delegate2: SyncItems?
-    
     override func viewDidLoad() {
-        
         super.viewDidLoad()
+        
         setViews()
         setConstraints()
     }
@@ -81,6 +81,7 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func setConstraints(){
+        
         view.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         
         ordersLabel.text = "Orders"
@@ -99,7 +100,6 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         ordersListTable.allowsSelection = false
         ordersListTable.isUserInteractionEnabled = true
         ordersListTable.separatorStyle = .none
-        ordersListTable.isUserInteractionEnabled = true
         ordersListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
         ordersListTable.translatesAutoresizingMaskIntoConstraints = false
         ordersListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
@@ -121,7 +121,7 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         billView.bottomAnchor.constraint(equalTo: payButton.topAnchor, constant: -8).isActive = true
         billView.heightAnchor.constraint(equalTo: billView.widthAnchor, multiplier: 0.25).isActive = true
         
-        payButton.setTitle("Pay", for: .normal)
+        payButton.setTitle("Exit", for: .normal)
         payButton.titleLabel?.font = .boldSystemFont(ofSize: 20)
         payButton.setTitleColor(.white, for: .normal)
         payButton.backgroundColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
@@ -132,6 +132,7 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         payButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         payButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         payButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8).isActive = true
+        payButton.addTarget(self, action: #selector(payButtonTap), for: .touchUpInside)
         
         horizontalStackView.axis = .horizontal
         horizontalStackView.isLayoutMarginsRelativeArrangement = true
@@ -205,10 +206,9 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         return 80
     }
     
-    func syncItems() {
-        ordersList = DataBaseQueries.getOrders(session_id: session_id)
-        print("Reloaded orderlist")
-    }
+//    func syncItems() {
+//        ordersList = DataBaseQueries.getOrders(session_id: session_id)
+//    }
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false
@@ -217,6 +217,12 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
+    }
+    
+    @objc func payButtonTap(){
+        self.dismiss(animated: true,completion: {
+                    self.dismissDelegate?.didDismiss()
+        })
     }
 }
 
@@ -227,6 +233,7 @@ class OrdersSectionHeader: UITableViewHeaderFooterView{
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
+        
         contentView.addSubview(timeLabel)
     }
     

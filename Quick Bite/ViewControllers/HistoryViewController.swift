@@ -10,8 +10,7 @@ import UIKit
 class HistoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var menuList = [Item]()
-    
-    var historyList = [Item]() {
+    var historyList = [OrderList]() {
         didSet{
             historyListTable.reloadData()
         }
@@ -19,10 +18,10 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     var historyListTable = UITableView()
     var historyLabel = UILabel()
-
+    
     override func viewDidLoad() {
-        
         super.viewDidLoad()
+        
         setViews()
         setConstraints()
     }
@@ -47,6 +46,19 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         historyLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         historyLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
         historyLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        
+        historyListTable.delegate = self
+        historyListTable.dataSource = self
+        historyListTable.allowsSelection = true
+        historyListTable.isUserInteractionEnabled = true
+        historyListTable.separatorStyle = .none
+        historyListTable.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
+        historyListTable.translatesAutoresizingMaskIntoConstraints = false
+        historyListTable.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
+        historyListTable.topAnchor.constraint(equalTo: historyLabel.bottomAnchor, constant: 8).isActive = true
+        historyListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
+        historyListTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8).isActive = true
+        historyListTable.register(HistoryTableViewCell.self, forCellReuseIdentifier: "HistoryTableViewCell")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -55,12 +67,26 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryTableViewCell") as! HistoryTableViewCell
-        
+        cell.orderList = historyList[historyList.count - indexPath.row - 1]
         return cell
     }
-}
-
-class HistoryTableViewCell: UITableViewCell{
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 112
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let orderDetailsVC = OrderDetailsViewController()
+        orderDetailsVC.ordersList = historyList[historyList.count - indexPath.row - 1]
+        self.navigationController?.pushViewController(orderDetailsVC, animated: true)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true
+    }
 }
-

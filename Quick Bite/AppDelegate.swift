@@ -19,6 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = UINavigationController(rootViewController: QRViewController())
         self.window?.makeKeyAndVisible()
+        DataBaseQueries.createAndOpenDB()
+        DataBaseQueries.creteTables()
+        DataBaseQueries.insertItems()
         return true
     }
 

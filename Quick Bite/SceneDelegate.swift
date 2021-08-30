@@ -24,6 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = UINavigationController(rootViewController: QRViewController())
         window?.makeKeyAndVisible()
+        DataBaseQueries.createAndOpenDB()
+        DataBaseQueries.creteTables()
+        DataBaseQueries.insertItems()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
