@@ -9,12 +9,11 @@ import UIKit
 import SQLite3
 
 @available(iOS 13.0, *)
-class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, UISearchBarDelegate, UpdateItems  {
+class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UpdateItems  {
     
     var menuList = [Item](){
         didSet{
             filteredMenuList = menuList
-            //updateSearchResults(for: resultSearchController)
         }
     }
     
@@ -27,6 +26,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     weak var delegateSync: SyncItems?
     
     let welcomeLabel = UILabel()
+    let searchBar = UISearchBar()
     let menuListTable = UITableView()
     var resultSearchController = UISearchController()
     
@@ -41,22 +41,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         view.addSubview(welcomeLabel)
         view.addSubview(menuListTable)
-//        resultSearchController = ({
-//            let controller = UISearchController(searchResultsController: nil)
-//            controller.searchResultsUpdater = self
-//            controller.obscuresBackgroundDuringPresentation = false
-//            controller.searchBar.sizeToFit()
-//            controller.searchBar.placeholder = "Search here..."
-//            controller.searchBar.searchTextField.backgroundColor = .white
-//            controller.searchBar.layer.cornerRadius = 7.0
-//            controller.searchBar.barTintColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
-//            controller.searchBar.delegate = self
-//
-//            menuListTable.tableHeaderView = controller.searchBar
-//            menuListTable.tableHeaderView?.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
-//
-//            return controller
-//        })()
     }
     
     func setConstraints(){
@@ -74,6 +58,14 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
         welcomeLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         
+        searchBar.sizeToFit()
+        searchBar.placeholder = "Search here..."
+        searchBar.searchBarStyle = .minimal
+        searchBar.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+        searchBar.barTintColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
+        searchBar.layer.cornerRadius = 7.0
+        searchBar.delegate = self
+        
         menuListTable.delegate = self
         menuListTable.dataSource = self
         menuListTable.allowsSelection = false
@@ -86,6 +78,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         menuListTable.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 0).isActive = true
         menuListTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
         menuListTable.register(MenuTableViewCell.self, forCellReuseIdentifier: "MenuTableViewCell")
+        menuListTable.tableHeaderView = searchBar
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -103,8 +96,8 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         return 112
     }
     
-    func updateSearchResults(for searchController: UISearchController) {
-        let searchString = searchController.searchBar.text!.lowercased()
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let searchString = searchText.lowercased()
         if(searchString == "") {
             filteredMenuList = menuList
         }
@@ -118,7 +111,14 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        searchBar.text = ""
+        searchBar.showsCancelButton = false
         filteredMenuList = menuList
     }
     
@@ -127,7 +127,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func updateItems() {
-        //menuList = DataBaseQueries.getMenuItems()
         delegateSync?.syncItems()
     }
 }
