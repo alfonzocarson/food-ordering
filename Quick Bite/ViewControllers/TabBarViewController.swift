@@ -48,17 +48,17 @@ class TabBarViewController: UITabBarController, SyncItems, DismissDelegate, Chan
             vc[i].tabBarItem = UITabBarItem(title: tabNames[i], image: UIImage(named: tabNames[i]), selectedImage: UIImage(named: tabNames[i]))
         }
         
-        menuVC.menuList = DataBaseQueries.getMenuItems()
-        cartVC.cartList = DataBaseQueries.getCartItems()
-        cartVC.session_id = DataBaseQueries.getSessionID()
-        cartVC.order_id = DataBaseQueries.getOrderID(session_id: cartVC.session_id)
-        ordersVC.session_id = cartVC.session_id
-        ordersVC.ordersList = DataBaseQueries.getOrders(session_id: cartVC.session_id)
-        historyVC.historyList = DataBaseQueries.getHistory(session_id: cartVC.session_id)
+//        menuVC.menuList = DataBaseQueries.getMenuItems()
+//        cartVC.cartList = DataBaseQueries.getCartItems()
+//        cartVC.session_id = DataBaseQueries.getSessionID()
+//        cartVC.order_id = DataBaseQueries.getOrderID(session_id: cartVC.session_id)
+//        ordersVC.session_id = cartVC.session_id
+//        ordersVC.ordersList = DataBaseQueries.getOrders(session_id: cartVC.session_id)
+//        historyVC.historyList = DataBaseQueries.getHistory(session_id: cartVC.session_id)
         
         tabBar.barTintColor = .white
         tabBar.unselectedItemTintColor = .black
-        tabBar.tintColor = .red // #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
+        tabBar.tintColor = .red
     }
     
     func syncItems() {

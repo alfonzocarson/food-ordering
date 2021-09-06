@@ -9,7 +9,15 @@ import UIKit
 
 class HistoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var menuList = [Item]()
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        historyList = DataBaseQueries.getHistory(session_id: DataBaseQueries.getSessionID())
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var historyList = [OrderList]() {
         didSet{
             historyListTable.reloadData()

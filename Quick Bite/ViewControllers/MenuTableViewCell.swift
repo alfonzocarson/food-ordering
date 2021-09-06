@@ -13,7 +13,7 @@ class MenuTableViewCell: UITableViewCell {
         didSet{
             priceLabel.text = "₹ \(item.price)"
             itemLabel.text = item.item_name
-            symbol.image = item.veg == true ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
+            symbol.image = item.isVeg == true ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
             qty = item.qty
         }
     }

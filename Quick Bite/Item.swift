@@ -12,7 +12,7 @@ struct Item {
     var item_name: String
     var desc: String
     var price: Int
-    var veg: Bool
+    var isVeg: Bool
     var qty: Int
     var category_id: Int
     var category_name: String

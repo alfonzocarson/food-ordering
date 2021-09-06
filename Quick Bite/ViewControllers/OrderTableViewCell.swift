@@ -15,7 +15,7 @@ class OrderTableViewCell: UITableViewCell {
             itemLabel.text = "\(item.item_name)"
             priceLabel.text = "\(order.order_qty)  ×  ₹\(order.order_price)"
             totalPrice.text = "₹ \(order.order_qty * order.order_price)"
-            symbol.image = item.veg == true ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
+            symbol.image = item.isVeg == true ? UIImage(named: "Veg") : UIImage(named: "NonVeg")
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .long
             dateFormatter.timeStyle = .full

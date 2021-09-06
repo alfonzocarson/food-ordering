@@ -9,14 +9,21 @@ import UIKit
 
 class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UpdateItems {
     
+    init()   {
+        super.init(nibName: nil, bundle: nil)
+        cartList = DataBaseQueries.getCartItems()
+        session_id = DataBaseQueries.getSessionID()
+        order_id = DataBaseQueries.getOrderID(session_id: session_id)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var cartList = [Item](){
         didSet{
             cartListTable.reloadData()
             self.tabBarItem.badgeValue = cartList.count > 0 ? String(cartList.count) : nil
-            var cartTotal = 0
-            for item in cartList {
-                cartTotal += item.price * item.qty
-            }
             orderButton.isHidden = cartList.count == 0 ? true : false
             cartListTable.isHidden = cartList.count == 0 ? true : false
             emptyCartView.isHidden = cartList.count == 0 ? false : true
@@ -119,7 +126,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         emptyCartLabel.sizeToFit()
         emptyCartLabel.numberOfLines = 0
-        emptyCartLabel.text = "Your cart is empty.\nAdd something from the menu."
+        emptyCartLabel.text = "Your cart is empty.\n\nAdd food items from the menu."
         emptyCartLabel.textAlignment = .center
         emptyCartLabel.font = .systemFont(ofSize: 15)
         emptyCartLabel.translatesAutoresizingMaskIntoConstraints = false

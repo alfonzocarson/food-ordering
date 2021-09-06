@@ -31,7 +31,7 @@ class DataBaseQueries{
                     item_name: String(cString: sqlite3_column_text(selectStatement, 1)),
                     desc: String(cString: sqlite3_column_text(selectStatement, 2)),
                     price: Int(sqlite3_column_int(selectStatement, 3)),
-                    veg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
+                    isVeg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
                     qty: Int(sqlite3_column_int(selectStatement, 5)),
                     category_id: Int(sqlite3_column_int(selectStatement, 6)),
                     category_name: String(cString: sqlite3_column_text(selectStatement, 7))
@@ -64,7 +64,7 @@ class DataBaseQueries{
                     item_name: String(cString: sqlite3_column_text(selectStatement, 1)),
                     desc: String(cString: sqlite3_column_text(selectStatement, 2)),
                     price: Int(sqlite3_column_int(selectStatement, 3)),
-                    veg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
+                    isVeg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
                     qty: Int(sqlite3_column_int(selectStatement, 5)),
                     category_id: Int(sqlite3_column_int(selectStatement, 6)),
                     category_name: String(cString: sqlite3_column_text(selectStatement, 7))
@@ -234,7 +234,7 @@ class DataBaseQueries{
     }
     
     static func getItem(item_id :Int) -> Item{
-        var item: Item = Item(item_id: item_id, item_name: "No such item", desc: "", price: 0, veg: false, qty: 0, category_id: 0, category_name: "")
+        var item: Item = Item(item_id: item_id, item_name: "No such item", desc: "", price: 0, isVeg: false, qty: 0, category_id: 0, category_name: "")
         let selectString = """
         SELECT * FROM items where item_id = ?;
         """
@@ -250,7 +250,7 @@ class DataBaseQueries{
                     item_name: String(cString: sqlite3_column_text(selectStatement, 1)),
                     desc: String(cString: sqlite3_column_text(selectStatement, 2)),
                     price: Int(sqlite3_column_int(selectStatement, 3)),
-                    veg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
+                    isVeg: (Int(sqlite3_column_int(selectStatement, 4)) != 0),
                     qty: Int(sqlite3_column_int(selectStatement, 5)),
                     category_id: Int(sqlite3_column_int(selectStatement, 6)),
                     category_name: String(cString: sqlite3_column_text(selectStatement, 7))

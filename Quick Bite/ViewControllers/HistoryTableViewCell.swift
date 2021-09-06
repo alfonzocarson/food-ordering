@@ -20,12 +20,22 @@ class HistoryTableViewCell: UITableViewCell{
             dateFormatter.amSymbol = "AM"
             dateFormatter.pmSymbol = "PM"
             timeLabel.text = "\(dateFormatter.string(from: date!))"
+            ordersCountLabel.text = "Orders: \(orderList.orders.count)"
+            var amount = 0
+            for (_, order) in orderList.orders {
+                for item in order {
+                    amount += item.order_qty * item.order_price
+                }
+            }
+            orderAmountLabel.text = "₹ \(Double(amount) + Double(amount) * 0.05)"
         }
     }
     
     let cardView = UIView()
     let restaurantTitle = UILabel()
     let timeLabel = UILabel()
+    let ordersCountLabel = UILabel()
+    let orderAmountLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -43,6 +53,8 @@ class HistoryTableViewCell: UITableViewCell{
         contentView.addSubview(cardView)
         contentView.addSubview(restaurantTitle)
         contentView.addSubview(timeLabel)
+        contentView.addSubview(ordersCountLabel)
+        contentView.addSubview(orderAmountLabel)
     }
     
     func setConstraints(){
@@ -68,8 +80,20 @@ class HistoryTableViewCell: UITableViewCell{
         restaurantTitle.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 8).isActive = true
         
         timeLabel.font = .systemFont(ofSize: 14)
+        timeLabel.textColor = .systemGray
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         timeLabel.leftAnchor.constraint(equalTo: cardView.leftAnchor,constant: 24).isActive = true
         timeLabel.topAnchor.constraint(equalTo: restaurantTitle.bottomAnchor, constant: 8).isActive = true
+        
+        ordersCountLabel.font = .systemFont(ofSize: 15)
+        ordersCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        ordersCountLabel.leftAnchor.constraint(equalTo: cardView.leftAnchor,constant: 24).isActive = true
+        ordersCountLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
+        
+        orderAmountLabel.font = .systemFont(ofSize: 15)
+        orderAmountLabel.textAlignment = .right
+        orderAmountLabel.translatesAutoresizingMaskIntoConstraints = false
+        orderAmountLabel.rightAnchor.constraint(equalTo: cardView.rightAnchor ,constant: -24).isActive = true
+        orderAmountLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -8).isActive = true
     }
 }

@@ -7,7 +7,17 @@
 
 import UIKit
 
-class OrdersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class OrdersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        session_id = DataBaseQueries.getSessionID()
+        ordersList = DataBaseQueries.getOrders(session_id: session_id)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     var session_id: Int = 0
     var ordersList: OrderList! {
@@ -15,7 +25,7 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
             self.tabBarItem.badgeValue = ordersList.orders.count > 0 ? String(ordersList.orders.count) : nil
             ordersListTable.isHidden = ordersList.orders.count > 0 ? false : true
             billView.isHidden = ordersList.orders.count > 0 ? false : true
-            ordersList.orders.count > 0 ? payButton.setTitle("Choose payment method", for: .normal) : payButton.setTitle("Exit", for: .normal)
+            ordersList.orders.count > 0 ? payButton.setTitle("Choose payment method ▸", for: .normal) : payButton.setTitle("Exit", for: .normal)
             itemTotal = 0
             for (_, order) in ordersList.orders {
                 for item in order {
@@ -26,10 +36,8 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     var itemTotal = 0 {
-        didSet{
-            itemTotalAmount.text = "₹\(Double(itemTotal) + 0.0)"
-            taxAmount.text = "₹\(Double(itemTotal) * 0.05)"
-            grandTotalAmount.text = "₹\(Double(itemTotal) + Double(itemTotal) * 0.05)"
+        didSet{ 
+            textFieldDidEndEditing(discountField)
         }
     }
     
@@ -46,9 +54,11 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     
     let itemTotalLabel = UILabel()
     let taxLabel = UILabel()
+    let discountField = UITextField()
     let grandTotalLabel = UILabel()
     
     let itemTotalAmount = UILabel()
+    let discountAmount = UILabel()
     let taxAmount = UILabel()
     let grandTotalAmount = UILabel()
     
@@ -57,6 +67,9 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         
         setViews()
         setConstraints()
+        self.setupHideKeyboardOnTap()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     func setViews(){
@@ -72,10 +85,12 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         horizontalStackView.addArrangedSubview(rightStackView)
         
         leftStackView.addArrangedSubview(itemTotalLabel)
+        leftStackView.addArrangedSubview(discountField)
         leftStackView.addArrangedSubview(taxLabel)
         leftStackView.addArrangedSubview(grandTotalLabel)
         
         rightStackView.addArrangedSubview(itemTotalAmount)
+        rightStackView.addArrangedSubview(discountAmount)
         rightStackView.addArrangedSubview(taxAmount)
         rightStackView.addArrangedSubview(grandTotalAmount)
     }
@@ -119,9 +134,9 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         billView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 8).isActive = true
         billView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -8).isActive = true
         billView.bottomAnchor.constraint(equalTo: payButton.topAnchor, constant: -8).isActive = true
-        billView.heightAnchor.constraint(equalTo: billView.widthAnchor, multiplier: 0.25).isActive = true
+        billView.heightAnchor.constraint(equalTo: billView.widthAnchor, multiplier: 0.3).isActive = true
         
-        payButton.setTitle("Exit", for: .normal)
+        ordersList.orders.count > 0 ? payButton.setTitle("Choose payment method ▸", for: .normal) : payButton.setTitle("Exit", for: .normal)
         payButton.titleLabel?.font = .boldSystemFont(ofSize: 20)
         payButton.setTitleColor(.white, for: .normal)
         payButton.backgroundColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
@@ -155,6 +170,17 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         itemTotalLabel.text = "Item Total"
         itemTotalLabel.font = .systemFont(ofSize: 14)
         
+        discountField.placeholder = "Enter Discount Code..."
+        discountField.backgroundColor = UIColor(red: 240/250.0, green: 240/250.0, blue: 240/250.0, alpha: 1.0)
+        discountField.font = .boldSystemFont(ofSize: 14)
+        discountField.returnKeyType = UIReturnKeyType.done
+        discountField.textColor = .systemBlue
+        discountField.autocorrectionType = UITextAutocorrectionType.no
+        discountField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        discountField.translatesAutoresizingMaskIntoConstraints = false
+        discountField.rightAnchor.constraint(equalTo: leftStackView.rightAnchor, constant: -8).isActive = true
+        discountField.delegate = self
+        
         taxLabel.text = "Taxes and Charges"
         taxLabel.font = .systemFont(ofSize: 14)
         
@@ -164,6 +190,10 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         itemTotalAmount.text = "₹\(Double(itemTotal) + 0.0)"
         itemTotalAmount.textAlignment = .right
         itemTotalAmount.font = .systemFont(ofSize: 14)
+        
+        discountAmount.text = "₹\(0)"
+        discountAmount.textAlignment = .right
+        discountAmount.font = .boldSystemFont(ofSize: 14)
         
         taxAmount.text = "₹\(Double(itemTotal) * 0.05)"
         taxAmount.textAlignment = .right
@@ -206,10 +236,6 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
         return 80
     }
     
-//    func syncItems() {
-//        ordersList = DataBaseQueries.getOrders(session_id: session_id)
-//    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
@@ -220,9 +246,77 @@ class OrdersViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     @objc func payButtonTap(){
-        self.dismiss(animated: true,completion: {
-                    self.dismissDelegate?.didDismiss()
-        })
+        
+        let alert = UIAlertController(title: "Your Payment is Successful", message: "You have paid \(grandTotalAmount.text!)\n You saved \(discountAmount.text!)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { action in
+                                      //print("Yay! You brought your towel!")
+                                      self.dismiss(animated: true,completion: {
+                                          self.dismissDelegate?.didDismiss()
+                                      })
+                                  }))
+        self.present(alert, animated: true)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0{
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y != 0{
+                self.view.frame.origin.y += keyboardSize.height
+            }
+        }
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.textColor = .systemBlue
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        _ = textFieldShouldReturn(textField)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        if textField.text == "ZOHO10" {
+            discountAmount.textColor = #colorLiteral(red: 0, green: 0.6409886479, blue: 0, alpha: 1)
+            textField.textColor = #colorLiteral(red: 0, green: 0.6409886479, blue: 0, alpha: 1)
+            updateBillLabels(itemTotal: Double(itemTotal), discount: 10)
+        }
+        else if textField.text == "" {
+            discountAmount.textColor = .black
+            updateBillLabels(itemTotal: Double(itemTotal), discount: 0)
+            return true
+        }
+        else{
+            textField.textColor = .systemRed
+            discountAmount.textColor = .black
+            updateBillLabels(itemTotal: Double(itemTotal), discount: 0)
+        }
+        return true
+    }
+    
+    func updateBillLabels(itemTotal: Double, discount: Double){
+        itemTotalAmount.text = "₹\(String(format:"%.2f",Double(itemTotal) + 0.0))"
+        discountAmount.text = "₹\(String(format:"%.2f",Double(itemTotal) * discount/100))"
+        taxAmount.text = "₹\(String(format:"%.2f",(Double(itemTotal) * (100-discount)/100) * 0.05))"
+        grandTotalAmount.text = "₹\(String(format:"%.2f",Double(itemTotal * (100-discount)/100) + Double(itemTotal * (100-discount)/100) * 0.05))"
+    }
+    
+    func setupHideKeyboardOnTap() {
+        self.view.addGestureRecognizer(self.endEditingRecognizer())
+        self.navigationController?.navigationBar.addGestureRecognizer(self.endEditingRecognizer())
+    }
+    
+    private func endEditingRecognizer() -> UIGestureRecognizer {
+        let tap = UITapGestureRecognizer(target: self.view, action: #selector(self.view.endEditing(_:)))
+        tap.cancelsTouchesInView = false
+        return tap
     }
 }
 

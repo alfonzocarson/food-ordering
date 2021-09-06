@@ -11,9 +11,19 @@ import SQLite3
 @available(iOS 13.0, *)
 class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UpdateItems  {
     
+    init()   {
+        super.init(nibName: nil, bundle: nil)
+        menuList = DataBaseQueries.getMenuItems()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var menuList = [Item](){
         didSet{
             filteredMenuList = menuList
+            searchBar(searchBar, textDidChange: searchBar.text ?? "")
         }
     }
     
@@ -28,7 +38,6 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
     let welcomeLabel = UILabel()
     let searchBar = UISearchBar()
     let menuListTable = UITableView()
-    var resultSearchController = UISearchController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
