@@ -1,8 +1,8 @@
 //
 //  CartTableViewCell.swift
-//  Quick Bite
+//  
 //
-//  Created by Mohammad on 12/08/21.
+//  Created by Alfonzo on 12/08/21.
 //
 
 import UIKit

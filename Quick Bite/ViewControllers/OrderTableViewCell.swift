@@ -1,8 +1,8 @@
 //
 //  OrderTableViewCell.swift
-//  Quick Bite
+// 
 //
-//  Created by Mohammad on 16/08/21.
+//  Created by Alfonzo on 16/08/21.
 //
 
 import UIKit

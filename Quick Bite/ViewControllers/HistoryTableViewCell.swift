@@ -1,8 +1,8 @@
 //
 //  HistoryTableViewCell.swift
-//  Quick Bite
+//  
 //
-//  Created by Mohammad on 30/08/21.
+//  Created by Alfonzo on 30/08/21.
 //
 
 import UIKit
